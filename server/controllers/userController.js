@@ -1,7 +1,9 @@
+require('dotenv').config();
 const User = require('../models/user');
 const asyncHandler = require('express-async-handler');
 const { generateAccessToken, generateRefreshToken } = require('../middlewares/jwt');
 const { response } = require('express');
+const jwt = require('jsonwebtoken');
 
 const register = asyncHandler(async (req, res) => {
     const { email, password, firstname, lastname, mobile } = req.body;
@@ -58,8 +60,39 @@ const getCurrent = asyncHandler(async (req, res) => {
     })
 })
 
+const refreshAccessToken = asyncHandler(async (req, res) => {
+    const cookie = req.cookies;
+    if (!cookie && !cookie.refreshToken) {
+        throw new Error('No refresh token in cookie');
+    }
+    const result = await jwt.verify(cookie.refreshToken, process.env.JWT_SECRET);
+    const response = await User.findOne({ _id: result._id, refreshToken: cookie.refreshToken });
+    return res.status(200).json({
+        success: response ? true : false,
+        newAccessToken: response ? generateAccessToken(response._id, response.role) : 'Invalid refresh token'
+    })
+})
+
+const logout = asyncHandler(async (req, res) => {
+    const cookie = req.cookies;
+    if (!cookie || !cookie.refreshToken) {
+        throw new Error('No refresh token in cookies');
+    }
+    await User.findOneAndUpdate({ refreshToken: cookie.refreshToken }, { refreshToken: '' }, { new: true });
+    res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: true
+    })
+    return res.status(200).json({
+        success: response ? true : false,
+        message: 'Log out successfully'
+    })
+})
+
 module.exports = {
     register,
     login,
     getCurrent,
+    refreshAccessToken,
+    logout,
 }
