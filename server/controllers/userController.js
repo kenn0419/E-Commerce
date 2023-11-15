@@ -4,6 +4,8 @@ const asyncHandler = require('express-async-handler');
 const { generateAccessToken, generateRefreshToken } = require('../middlewares/jwt');
 const { response } = require('express');
 const jwt = require('jsonwebtoken');
+const sendMail = require('../ultils/sendMail');
+const crypto = require('crypto');
 
 const register = asyncHandler(async (req, res) => {
     const { email, password, firstname, lastname, mobile } = req.body;
@@ -89,10 +91,61 @@ const logout = asyncHandler(async (req, res) => {
     })
 })
 
+const forgetPassword = asyncHandler(async (req, res) => {
+    const { email } = req.query;
+    if (!email) {
+        throw new Error('Missing email')
+    }
+    const user = await User.findOne({ email });
+    if (!user) {
+        throw new Error('User not found');
+    }
+    const resetToken = await user.createPasswordChangeToken();
+    await user.save();
+    const html = `
+        <b style="color: pink; font-size: 25px;">Please click the below link to change password</b>. 
+        <a href=${process.env.URL_SERVER}/api/user/reset-password/${resetToken}>Click here!!!</a>
+    `
+
+    const data = {
+        email,
+        html,
+    }
+
+    const result = await sendMail(data);
+    return res.status(200).json({
+        success: result ? true : false,
+        result
+    })
+})
+
+const resetPassword = asyncHandler(async (req, res) => {
+    const { password, token } = req.body;
+    if (!password || !token) {
+        throw new Error('Missing inputs');
+    }
+    const passwordResetToken = crypto.createHash('sha256').update(token).digest('hex');
+    const user = await User.findOne({ passwordResetToken, passwordResetExpires: { $gt: Date.now() } });
+    if (!user) {
+        throw new Error('Invalid reset token');
+    }
+    user.password = password;
+    user.passwordResetToken = undefined;
+    user.passwordChangeAt = Date.now();
+    user.passwordResetExpires = undefined;
+    await user.save();
+    return res.status(200).json({
+        success: user ? true : false,
+        message: user ? 'Change password successfully' : 'Something went wrong'
+    })
+})
+
 module.exports = {
     register,
     login,
     getCurrent,
     refreshAccessToken,
     logout,
+    forgetPassword,
+    resetPassword
 }
