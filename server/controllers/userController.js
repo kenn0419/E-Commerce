@@ -2,7 +2,6 @@ require('dotenv').config();
 const User = require('../models/user');
 const asyncHandler = require('express-async-handler');
 const { generateAccessToken, generateRefreshToken } = require('../middlewares/jwt');
-const { response } = require('express');
 const jwt = require('jsonwebtoken');
 const sendMail = require('../ultils/sendMail');
 const crypto = require('crypto');
@@ -44,7 +43,7 @@ const login = asyncHandler(async (req, res) => {
         res.cookie('refreshToken', newRefreshToken, { httpOnly: true, maxAge: 5 * 24 * 60 * 60 * 1000 })
         return res.status(200).json({
             success: true,
-            message: 'Login successfully',
+            message: 'Login succe   ssfully',
             accessToken,
             userData,
         })

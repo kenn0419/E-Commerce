@@ -1,3 +1,4 @@
+const { json, response } = require('express');
 const Product = require('../models/product');
 const asyncHandler = require('express-async-handler');
 const slugify = require('slugify');
@@ -27,9 +28,49 @@ const getProduct = asyncHandler(async (req, res) => {
 })
 
 const getProducts = asyncHandler(async (req, res) => {
-    const products = await Product.find();
+    const queries = { ...req.query };
+
+    //Tách các trường hợp ra khỏi query
+    const excludeFields = ['limit', 'sort', 'page', 'fields'];
+    excludeFields.forEach(item => delete queries[item]);
+
+    //Format các operators cho đúng cú pháp mongoose
+    let queryString = JSON.stringify(queries);
+    queryString = queryString.replace(/\b(gte|gt|lt|lte)\b/g, item => `$${item}`)
+    const formatedQuery = JSON.parse(queryString);
+
+    //Filtering
+    if (queries?.title) {
+        formatedQuery.title = {
+            $regex: queries.title,
+            $options: 'i'
+        }
+    }
+    let queryCommand = Product.find(formatedQuery);
+
+    //Sorting
+    if (req.query.sort) {
+        const sortBy = req.query.sort.split(',').join(' ');
+        queryCommand = queryCommand.sort(sortBy);
+    }
+
+    //Fields limiting
+    if (req.query.fields) {
+        const fields = req.query.fields.split(', ').join(' ');
+        queryCommand = queryCommand.select(fields);
+    }
+
+    //Pagination
+    const page = +req.query.page || 1;
+    const limit = +req.query.limit || process.env.LIMIT_PRODUCTS;
+    const skip = (page - 1) * limit;
+    queryCommand = queryCommand.skip(skip).limit(limit);
+
+    //Excecute query
+    const products = await queryCommand;
     return res.status(200).json({
         success: products ? true : false,
+        counts: products.length,
         productList: products,
     })
 })
@@ -57,6 +98,52 @@ const deleteProduct = asyncHandler(async (req, res) => {
     })
 })
 
+const ratings = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    const { star, comment, pid } = req.body;
+    if (!star || !pid) {
+        throw new Error('Missing inputs');
+    }
+    const ratingProduct = await Product.findById(pid);
+    const alreadyRating = ratingProduct.ratings?.find(item => item.postedBy.toString() === _id);
+    if (alreadyRating) {
+        //update star and comment
+        await Product.updateOne({
+            ratings: { $elemMatch: alreadyRating }
+        }, {
+            $set: {
+                "ratings.$.star": star,
+                "ratings.$.comment": comment,
+            }
+        }, { new: true })
+    } else {
+        //add star and comment
+        await Product.findByIdAndUpdate(pid, {
+            $push: {
+                ratings: {
+                    star,
+                    comment,
+                    postedBy: _id
+                }
+            }
+        }, { new: true })
+    }
+
+    const totalRating = await ratingProduct.ratings.reduce((prev, current) => prev + current.star, 0) / ratingProduct.ratings.length;
+    await Product.updateOne({
+        _id: pid
+    }, {
+        $set: {
+            totalRating: totalRating
+        }
+    }, { new: true })
+
+    return res.status(200).json({
+        success: true,
+        message: 'Rating successfully'
+    })
+})
+
 
 module.exports = {
     createProduct,
@@ -64,4 +151,5 @@ module.exports = {
     getProducts,
     updateProduct,
     deleteProduct,
+    ratings,
 }
