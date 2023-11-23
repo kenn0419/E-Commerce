@@ -129,14 +129,9 @@ const ratings = asyncHandler(async (req, res) => {
         }, { new: true })
     }
 
-    const totalRating = await ratingProduct.ratings.reduce((prev, current) => prev + current.star, 0) / ratingProduct.ratings.length;
-    await Product.updateOne({
-        _id: pid
-    }, {
-        $set: {
-            totalRating: totalRating
-        }
-    }, { new: true })
+    const totalRating = ratingProduct.ratings.reduce((prev, current) => prev + current.star, 0) / ratingProduct.ratings.length;
+    ratingProduct.totalRating = totalRating;
+    await ratingProduct.save();
 
     return res.status(200).json({
         success: true,
