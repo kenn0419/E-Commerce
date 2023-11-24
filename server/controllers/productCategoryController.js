@@ -39,7 +39,7 @@ const deleteCategory = asyncHandler(async (req, res) => {
     const response = await ProductCategory.findByIdAndDelete(pcid);
     return res.status(200).json({
         success: response ? true : false,
-        message: response ? 'Update category successfully' : 'Something went wrong',
+        message: response ? 'Delete category successfully' : 'Something went wrong',
         deletedCategory: response,
     })
 })
