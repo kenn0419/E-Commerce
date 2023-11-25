@@ -140,8 +140,19 @@ const ratings = asyncHandler(async (req, res) => {
 })
 
 const uploadImageProduct = asyncHandler(async (req, res) => {
-    console.log(req.file);
-    return res.json('Oke');
+    if (!req.files) {
+        throw new Error('Missing inputs');
+    }
+    const { pid } = req.params;
+    const product = await Product.findByIdAndUpdate(pid, {
+        $push: {
+            images: { $each: req.files.map(item => item.path) }
+        }
+    }, { new: true });
+    return res.json({
+        success: product ? true : false,
+        product
+    });
 })
 
 

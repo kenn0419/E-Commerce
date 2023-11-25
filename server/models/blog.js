@@ -30,7 +30,7 @@ var blogSchema = new mongoose.Schema({
             ref: 'User'
         }
     ],
-    images: {
+    image: {
         type: String,
         default: 'https://previews.123rf.com/images/peshkov/peshkov1910/peshkov191000715/133391093-modern-blogging-sketch-on-white-wall-background-blog-and-media-concept-3d-rendering.jpg'
     },
