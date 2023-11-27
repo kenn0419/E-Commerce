@@ -156,6 +156,8 @@ const uploadImageProduct = asyncHandler(async (req, res) => {
 })
 
 
+
+
 module.exports = {
     createProduct,
     getProduct,
