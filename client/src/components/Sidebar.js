@@ -1,23 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { apiGetCategory } from '../apis/app';
 import { NavLink } from 'react-router-dom';
+import { createSlug } from '../ultils/helper';
+import { useSelector } from 'react-redux'
 
 const Sidebar = () => {
-    const [categories, setCategories] = useState();
-    const fetchCategory = async () => {
-        const response = await apiGetCategory();
-        if (response.success) {
-            setCategories(response.categoryList);
-        }
-    }
-    useEffect(() => {
-        fetchCategory();
-    }, [])
+    const { categories } = useSelector(state => state.appReducer);
     return (
-        <div className='flex flex-col'>
-            {categories.map(category => (
+        <div className='flex flex-col border'>
+            {categories?.map(category => (
                 <NavLink
-                    className='px-5'
+                    key={category._id}
+                    to={createSlug(category.title)}
+                    className={({ isActive }) => isActive ?
+                        'bg-main text-white px-5 hover:text-hover pt-[15px] pb-[14px] text-sm uppercase'
+                        :
+                        'px-5 hover:text-hover pt-[15px] pb-[14px] text-sm uppercase'
+                    }
                 >
                     {category.title}
                 </NavLink>
