@@ -2,3 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+.slick-dots {
+    display: none !important;
+}
+
+.slick-prev {
+    left: 20px;
+    z-index: 99;
+}
+
+.slick-prev::before {
+    color: red;
+    content: '\276E';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(199, 199, 199, 0.8);
+    width: 80px;
+    height: 80px;
+    color: gray;
+    font-size: 30px;
+}
+
+.slick-next {
+    z-index: 99;
+    right: 80px;
+}
+
+.slick-next::before {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(199, 199, 199, 0.8);
+    width: 80px;
+    height: 80px;
+    color: gray;
+    content: '\276F';
+    font-size: 30px;
+}
