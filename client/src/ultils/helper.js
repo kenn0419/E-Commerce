@@ -1,1 +1,2 @@
 export const createSlug = (st) => st.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").split(' ').join('-');
+export const formatMoney = (st) => st.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });

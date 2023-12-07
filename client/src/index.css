@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwindcss/line-clamp;
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
 
 .slick-dots {
@@ -19,15 +20,15 @@
     justify-content: center;
     align-items: center;
     background-color: rgb(199, 199, 199, 0.8);
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
     color: gray;
     font-size: 30px;
 }
 
 .slick-next {
     z-index: 99;
-    right: 80px;
+    right: 50px;
 }
 
 .slick-next::before {
@@ -35,8 +36,8 @@
     justify-content: center;
     align-items: center;
     background-color: rgb(199, 199, 199, 0.8);
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
     color: gray;
     content: '\276F';
     font-size: 30px;

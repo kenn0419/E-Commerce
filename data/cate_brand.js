@@ -23,6 +23,14 @@ const categoryData = [
         cate: 'Printer',
         brand: ['Ipad', 'Samsung', 'Acer', 'Asus', 'Lenovo', 'Haier']
     },
+    {
+        cate: 'Speaker',
+        brand: []
+    },
+    {
+        cate: 'Camera',
+        brand: []
+    },
 ]
 
 module.exports = categoryData;
