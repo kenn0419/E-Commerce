@@ -52,7 +52,7 @@ const BestSeller = () => {
     }, [active])
     return (
         <div>
-            <div className='flex  py-4 text-[20px] ml-[-8px]'>
+            <div className='flex py-4 text-[20px] ml-[-8px]'>
                 {tabs.map(tab => (
                     <span
                         key={tab.id}
@@ -63,16 +63,29 @@ const BestSeller = () => {
                     </span>
                 ))}
             </div>
-            <div className='mt-4 border-t-2 border-hover pt-4'>
+            <div className='mt-4 mx-[-10px] border-t-2 border-hover pt-4'>
                 <Slider {...settings}>
                     {products?.map(item => (
                         <Product
+                            pid={item.id}
                             key={item._id}
                             productData={item}
                             isNew={active === 1 ? true : false}
                         />
                     ))}
                 </Slider>
+            </div>
+            <div className='mt-4 flex gap-4 w-full '>
+                <img
+                    src='https://digital-world-2.myshopify.com/cdn/shop/files/banner2-home2_2000x_crop_center.png?v=1613166657'
+                    alt=''
+                    className='flex-1 object-contain'
+                />
+                <img
+                    src='https://digital-world-2.myshopify.com/cdn/shop/files/banner1-home2_2000x_crop_center.png?v=1613166657'
+                    alt=''
+                    className='flex-1 object-contain'
+                />
             </div>
         </div>
     )

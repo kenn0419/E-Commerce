@@ -10,10 +10,10 @@ export const appSlice = createSlice({
   },
   //Code logic xử lý action thông thường
   reducers: {
-    // logout: (state) => {
-    //   state.currentUser = null;
-    //   state.errorMessage = '';
-    // },
+    logout: (state) => {
+      state.currentUser = null;
+      state.errorMessage = '';
+    },
   },
   // Code logic xử lý async action
   extraReducers: (builder) => {
@@ -36,6 +36,6 @@ export const appSlice = createSlice({
   },
 })
 
-export const { } = appSlice.actions
+// export const { } = appSlice.actions
 
 export default appSlice.reducer
