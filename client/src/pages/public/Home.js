@@ -1,14 +1,15 @@
-import { Sidebar, Baner, BestSeller, } from '../../components'
+import { Sidebar, Baner, BestSeller, DealDaily } from '../../components'
 
 const Home = () => {
 
     return (
         <>
             <div className='w-main flex'>
-                <div className='flex flex-col gap-5 w-[20%] flex-auto'>
+                <div className='flex flex-col gap-5 w-[25%] flex-auto'>
                     <Sidebar />
+                    <DealDaily />
                 </div>
-                <div className='flex flex-col gap-5 pl-5 w-[80%] flex-auto'>
+                <div className='flex flex-col gap-5 pl-5 w-[75%] flex-auto'>
                     <Baner />
                     <BestSeller />
                 </div>
