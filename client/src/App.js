@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Login, Home, Public } from './pages/public';
 import path from './ultils/path';
-import { getCategory } from './store/asyncAction';
+import { getCategory } from './store/app/asyncAction';
 import { useDispatch } from 'react-redux';
 
 function App() {

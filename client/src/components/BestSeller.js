@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { apiGetProduct } from '../apis/product'
-import Product from './Product';
-import Slider from 'react-slick';
+import CustomSlider from './CustomSlider';
+import { useDispatch, useSelector } from 'react-redux';
+import { getNewProducts } from '../store/product/asyncAction';
 
 const tabs = [
     {
@@ -14,33 +15,23 @@ const tabs = [
     }
 ]
 
-var settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1
-};
-
 const BestSeller = () => {
     const [newProduct, setNewProduct] = useState();
     const [bestSeller, setBestSeller] = useState();
     const [active, setActive] = useState(1);
     const [products, setProducts] = useState();
+    const dispatch = useDispatch();
 
     const fetchProduct = async () => {
-        const response = await Promise.all([apiGetProduct({ sort: '-createdAt' }), apiGetProduct({ sort: '-sold' })]);
-        if (response[0]?.success) {
-            setNewProduct(response[0].productList);
+        const response = await apiGetProduct({ sort: '-sold' });
+        if (response?.success) {
+            setBestSeller(response.productList);
+            setProducts(response.productList);
         }
-        if (response[1]?.success) {
-            setBestSeller(response[1].productList);
-        }
-        setProducts(response[1].productList);
-
     }
     useEffect(() => {
         fetchProduct();
+        dispatch(getNewProducts());
     }, [])
     useEffect(() => {
         if (active === 1) {
@@ -64,16 +55,7 @@ const BestSeller = () => {
                 ))}
             </div>
             <div className='mt-4 mx-[-10px] border-t-2 border-hover pt-4'>
-                <Slider {...settings}>
-                    {products?.map(item => (
-                        <Product
-                            pid={item.id}
-                            key={item._id}
-                            productData={item}
-                            isNew={active === 1 ? true : false}
-                        />
-                    ))}
-                </Slider>
+                <CustomSlider products={products} active={active} />
             </div>
             <div className='mt-4 flex gap-4 w-full '>
                 <img
