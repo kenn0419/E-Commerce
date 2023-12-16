@@ -1,4 +1,4 @@
-import { Sidebar, Baner, BestSeller, DealDaily } from '../../components'
+import { Sidebar, Baner, BestSeller, DealDaily, FeartureProduct } from '../../components'
 
 const Home = () => {
 
@@ -13,6 +13,9 @@ const Home = () => {
                     <Baner />
                     <BestSeller />
                 </div>
+            </div>
+            <div className='mt-7'>
+                <FeartureProduct />
             </div>
             <div className='w-full h-[500px]'></div>
         </>

@@ -2,8 +2,9 @@ import React, { useEffect, useState, memo } from 'react';
 import icons from '../ultils/icon';
 import { apiGetProduct } from '../apis/product';
 import no_image from '../assets/no_image.png';
-import { formatMoney, renderStar } from '../ultils/helper'
+import { formatMoney, renderStar, secondsToHms } from '../ultils/helper'
 import { CountDown } from './';
+import moment from 'moment';
 
 let idInteval;
 const DealDaily = () => {
@@ -17,7 +18,15 @@ const DealDaily = () => {
         const response = await apiGetProduct({ limit: 1, page: Math.round(Math.random() * 10), totalRating: 5 });
         if (response.success) {
             setDealDaily(response.productList[0]);
-            setHour(23);
+            const today = `${moment().format('MM/DD/YYYY')} 0:00:00`;
+            const s = new Date(today).getTime() - new Date().getTime() + 24 * 3600 * 1000;
+            const number = secondsToHms(s);
+
+            setHour(number.h);
+            setMinute(number.m);
+            setSecond(number.s);
+        } else {
+            setHour(0);
             setMinute(59);
             setSecond(59);
         }
@@ -39,6 +48,7 @@ const DealDaily = () => {
                     if (hour > 0) {
                         setHour(prev => prev - 1);
                         setMinute(59);
+                        setSecond(59);
                     } else {
                         setExpireTime(!expireTime);
                     }
