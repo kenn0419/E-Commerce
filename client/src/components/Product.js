@@ -6,6 +6,8 @@ import { formatMoney } from '../ultils/helper';
 import { renderStar } from '../ultils/helper';
 import { SelectOption } from '.';
 import icons from '../ultils/icon';
+import { Link } from 'react-router-dom';
+import path from '../ultils/path';
 
 
 const Product = ({ productData, isNew, pid }) => {
@@ -13,8 +15,9 @@ const Product = ({ productData, isNew, pid }) => {
     const [isShowOptions, setIsShowOptions] = useState(false);
     return (
         <div className='w-full text-base px-[10px]'>
-            <div
+            <Link
                 className='w-full border p-[15px] flex flex-col items-center gap-2'
+                to={`/${path.DETAIL_PRODUCT}/${productData?._id}/${productData?.title}`}
                 onMouseEnter={e => setIsShowOptions(true)}
                 onMouseLeave={e => setIsShowOptions(false)}
             >
@@ -38,7 +41,7 @@ const Product = ({ productData, isNew, pid }) => {
                     <span className='flex'>{renderStar(productData?.totalRating)?.map((item, index) => <span key={index}>{item}</span>)}</span>
                     <span className=''>{formatMoney(productData.price)}</span>
                 </div>
-            </div>
+            </Link>
         </div>
     )
 }

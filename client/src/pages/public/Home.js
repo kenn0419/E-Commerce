@@ -52,9 +52,8 @@ const Home = () => {
                 </div>
             </div>
             <div>
-                <h3 className='uppercase text-[20px] font-semibold py-[15px] border-hover border-b-2'>Blog posts    </h3>
+                <h3 className='uppercase text-[20px] font-semibold py-[15px] border-hover border-b-2'>Blog posts</h3>
             </div>
-            <div className='w-full h-[500px] mt-5 bg-hover'>Footer</div>
         </>
     )
 }
