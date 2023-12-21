@@ -41,7 +41,10 @@ const Home = () => {
                             <div className='flex flex-col flex-1 gap-[2px]'>
                                 <span className='uppercase font-semibold'>{category.title}</span>
                                 {category.brand?.map((item, index) => (
-                                    <a href='/' className='flex gap-2 items-center text-gray-400 hover:text-hover text-sm'>
+                                    <a
+                                        key={index}
+                                        href='/'
+                                        className='flex gap-2 items-center text-gray-400 hover:text-hover text-sm'>
                                         <span><MdOutlineKeyboardArrowRight /></span>
                                         <span>{item}</span>
                                     </a>
