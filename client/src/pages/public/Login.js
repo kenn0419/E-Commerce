@@ -1,16 +1,55 @@
 import React, { useCallback, useState } from 'react'
 import { InputField, Button } from '../../components'
+import { apiLogin, apiRegister } from '../../apis';
+import Swal from 'sweetalert2'
+import { useNavigate } from 'react-router-dom';
+import path from '../../ultils/path';
+import { register } from '../../store/user/userSlice';
+import { useDispatch } from 'react-redux';
 
 const Login = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [payload, setPayload] = useState({
         email: '',
         password: '',
-        name: ''
+        firstname: '',
+        lastname: '',
+        mobile: ''
     })
     const [isRegister, setIsRegister] = useState(false);
-    const handleSubmit = useCallback(() => {
-        console.log(payload);
-    }, [payload])
+    const resetPayload = () => {
+        setPayload({
+            email: '',
+            password: '',
+            firstname: '',
+            lastname: '',
+            mobile: ''
+        })
+    }
+    const handleSubmit = useCallback(async () => {
+        const { firstname, lastname, mobile, ...data } = payload;
+        if (isRegister) {
+            const response = await apiRegister(payload);
+            if (response.success) {
+                Swal.fire('Congratulations', response.message, 'success').then(() => {
+                    setIsRegister(false);
+                    resetPayload();
+                })
+            } else {
+                Swal.fire('Oops!', response.message, 'error')
+            }
+        } else {
+            const response = await apiLogin(data);
+            if (response.success) {
+                dispatch(register({ isLoggedIn: true, token: response.accessToken, userData: response.userData }));
+                navigate(`/${path.HOME}`);
+                resetPayload();
+            } else {
+                Swal.fire('Oops!', response.message, 'error')
+            }
+        }
+    }, [payload, isRegister])
     return (
         <div className='w-full relative'>
             <img
@@ -18,13 +57,26 @@ const Login = () => {
                 alt=''
                 className='w-full h-full object-cover'
             />
-            <div className='absolute top-1/4 left-1/2 translate-x-[-50%] flex justify-center'>
+            <div className='absolute top-[120px] left-1/2 translate-x-[-50%] flex justify-center'>
                 <div className='p-8 bg-white rounded-md min-w-[500px]'>
                     <h1 className='text-[28px] font-semibold text-gray-600 uppercase text-center mb-4'>{isRegister ? 'Register' : 'Login'}</h1>
+                    {isRegister && <div className='flex justify-between items-center gap-4'>
+                        <InputField
+                            value={payload.firstname}
+                            setValue={setPayload}
+                            nameKey='firstname'
+                        />
+                        <InputField
+                            value={payload.lastname}
+                            setValue={setPayload}
+                            nameKey='lastname'
+                        />
+                    </div>}
                     {isRegister && <InputField
-                        value={payload.name}
+                        value={payload.mobile}
                         setValue={setPayload}
-                        nameKey='name'
+                        nameKey='mobile'
+                        type='phone'
                     />}
                     <InputField
                         value={payload.email}

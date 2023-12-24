@@ -4,8 +4,8 @@ import { Sidebar, Baner, BestSeller, DealDaily, FeartureProduct, CustomSlider } 
 
 const Home = () => {
     const { MdOutlineKeyboardArrowRight } = icons;
-    const { newProducts } = useSelector(state => state.productReducer)
-    const { categories } = useSelector(state => state.appReducer)
+    const { newProducts } = useSelector(state => state.product)
+    const { categories } = useSelector(state => state.app)
     return (
         <>
             <div className='w-main flex'>
