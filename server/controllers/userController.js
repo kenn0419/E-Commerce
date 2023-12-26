@@ -5,6 +5,8 @@ const { generateAccessToken, generateRefreshToken } = require('../middlewares/jw
 const jwt = require('jsonwebtoken');
 const sendMail = require('../ultils/sendMail');
 const crypto = require('crypto');
+const makeToken = require('uniqid');
+
 
 const register = asyncHandler(async (req, res) => {
     const { email, password, firstname, lastname, mobile } = req.body;
@@ -17,12 +19,42 @@ const register = asyncHandler(async (req, res) => {
     const user = await User.findOne({ email: email });
     if (user) {
         throw new Error('User has existed');
+    }
+    const token = makeToken();
+    res.cookie('dataRegister', { ...req.body, token }, { httpOnly: true, maxAge: 15 * 60 * 1000 })
+    const html = `
+        <b style="color: pink; font-size: 25px;">Please click the below link to active account. This link will have a period of 15 minutes from now on</b>. 
+        <a href=${process.env.URL_SERVER}/api/user/final-register/${token}>Click here!!!</a>
+    `
+    await sendMail({ email, html, subject: 'Verify account' })
+    return res.json({
+        success: true,
+        message: 'Please check your email to active account'
+    })
+})
+
+const finalRegister = asyncHandler(async (req, res) => {
+    const cookie = req.cookies;
+    const token = req.params.token;
+    if (!cookie || cookie?.dataRegister?.token !== token) {
+        return res.redirect(`${process.env.CLIENT_URL}/final-register/failed`)
+    }
+    const newUser = await User.create({
+        email: cookie?.dataRegister?.email,
+        firstname: cookie?.dataRegister?.firstname,
+        lastname: cookie?.dataRegister?.lastname,
+        email: cookie?.dataRegister?.email,
+        mobile: cookie?.dataRegister?.mobile,
+        password: cookie?.dataRegister?.password,
+    });
+    res.clearCookie('dataRegister', {
+        httpOnly: true,
+        secure: true
+    })
+    if (newUser) {
+        return res.redirect(`${process.env.CLIENT_URL}/login`)
     } else {
-        const newUser = await User.create(req.body);
-        return res.status(200).json({
-            success: newUser ? true : false,
-            message: newUser ? 'Registered successfully!!!' : 'Something went wrong'
-        })
+        return res.redirect(`${process.env.CLIENT_URL}/final-register/failed`)
     }
 })
 
@@ -109,6 +141,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
     const data = {
         email,
         html,
+        subject: 'Forgot Password'
     }
 
     const result = await sendMail(data);
@@ -249,4 +282,5 @@ module.exports = {
     updateUserByAdmin,
     updateAddressUser,
     addIntoCart,
+    finalRegister,
 }
