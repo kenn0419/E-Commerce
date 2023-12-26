@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react'
 import { InputField, Button } from '../../components'
-import { apiLogin, apiRegister } from '../../apis';
+import { apiForgotPassword, apiLogin, apiRegister } from '../../apis';
 import Swal from 'sweetalert2'
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import path from '../../ultils/path';
 import { register } from '../../store/user/userSlice';
 import { useDispatch } from 'react-redux';
@@ -10,7 +10,6 @@ import { useDispatch } from 'react-redux';
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const location = useLocation();
     const [payload, setPayload] = useState({
         email: '',
         password: '',
@@ -18,6 +17,8 @@ const Login = () => {
         lastname: '',
         mobile: ''
     })
+    const [isForgotPassword, setIsForgotPassword] = useState(false);
+    const [email, setEmail] = useState('');
     const [isRegister, setIsRegister] = useState(false);
     const resetPayload = () => {
         setPayload({
@@ -51,8 +52,30 @@ const Login = () => {
             }
         }
     }, [payload, isRegister])
+    const handleForgotPassword = async () => {
+        const response = await apiForgotPassword({ email });
+        console.log(response);
+    }
     return (
         <div className='w-full relative'>
+            <div className='absolute top-0 left-0 right-0 bottom-0 z-50 bg-white flex flex-col items-center justify-center pt-8'>
+                <div className=' flex flex-col gap-4'>
+                    <label htmlFor='email' className='text-center uppercase font-semibold'>Forgot password</label>
+                    <input
+                        id='email'
+                        placeholder='Enter your email'
+                        className='w-[500px] outline-none pb-2 border-b border-hover-2 placeholder:text-sm'
+                        onChange={(e) => setEmail(e.target.value)}
+                        value={email}
+                    />
+                    <div className='flex justify-end items-center'>
+                        <Button
+                            name='Submit'
+                            handleOnClick={handleForgotPassword}
+                        />
+                    </div>
+                </div>
+            </div>
             <img
                 src='https://img.freepik.com/premium-vector/geometric-gradient-technology-background_23-2149110132.jpg?size=626&ext=jpg&ga=GA1.1.1546980028.1703030400&semt=ais'
                 alt=''
@@ -73,18 +96,18 @@ const Login = () => {
                             nameKey='lastname'
                         />
                     </div>}
-                    {isRegister && <InputField
-                        value={payload.mobile}
-                        setValue={setPayload}
-                        nameKey='mobile'
-                        type='phone'
-                    />}
                     <InputField
                         value={payload.email}
                         setValue={setPayload}
                         nameKey='email'
                         type='email'
                     />
+                    {isRegister && <InputField
+                        value={payload.mobile}
+                        setValue={setPayload}
+                        nameKey='mobile'
+                        type='phone'
+                    />}
                     <InputField
                         value={payload.password}
                         setValue={setPayload}

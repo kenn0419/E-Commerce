@@ -52,7 +52,7 @@ const finalRegister = asyncHandler(async (req, res) => {
         secure: true
     })
     if (newUser) {
-        return res.redirect(`${process.env.CLIENT_URL}/login`)
+        return res.redirect(`${process.env.CLIENT_URL}/final-register/success`)
     } else {
         return res.redirect(`${process.env.CLIENT_URL}/final-register/failed`)
     }
@@ -123,7 +123,7 @@ const logout = asyncHandler(async (req, res) => {
 })
 
 const forgetPassword = asyncHandler(async (req, res) => {
-    const { email } = req.query;
+    const { email } = req.body;
     if (!email) {
         throw new Error('Missing email')
     }
@@ -135,7 +135,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
     await user.save();
     const html = `
         <b style="color: pink; font-size: 25px;">Please click the below link to change password</b>. 
-        <a href=${process.env.URL_SERVER}/api/user/reset-password/${resetToken}>Click here!!!</a>
+        <a href=${process.env.CLIENT_URL}/reset-password/${resetToken}>Click here!!!</a>
     `
 
     const data = {
