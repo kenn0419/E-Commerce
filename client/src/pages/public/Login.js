@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import path from '../../ultils/path';
 import { register } from '../../store/user/userSlice';
 import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -54,28 +55,41 @@ const Login = () => {
     }, [payload, isRegister])
     const handleForgotPassword = async () => {
         const response = await apiForgotPassword({ email });
-        console.log(response);
+        if (response.success) {
+            toast.success(response.message);
+        } else {
+            toast.error(response.message);
+        }
     }
     return (
         <div className='w-full relative'>
-            <div className='absolute top-0 left-0 right-0 bottom-0 z-50 bg-white flex flex-col items-center justify-center pt-8'>
-                <div className=' flex flex-col gap-4'>
-                    <label htmlFor='email' className='text-center uppercase font-semibold'>Forgot password</label>
-                    <input
-                        id='email'
-                        placeholder='Enter your email'
-                        className='w-[500px] outline-none pb-2 border-b border-hover-2 placeholder:text-sm'
-                        onChange={(e) => setEmail(e.target.value)}
-                        value={email}
-                    />
-                    <div className='flex justify-end items-center'>
-                        <Button
-                            name='Submit'
-                            handleOnClick={handleForgotPassword}
-                        />
+            {isForgotPassword &&
+                <div
+                    className={`absolute top-0 left-0 right-0 bottom-0 z-50 bg-overlay flex flex-col pt-16 items-center animate-slide-bottom`}>
+                    <div className='w-[700px] bg-white rounded-md'>
+                        <div className='flex flex-col gap-4 p-4'>
+                            <label htmlFor='email' className='text-center uppercase font-semibold'>Forgot password</label>
+                            <input
+                                id='email'
+                                placeholder='Enter your email'
+                                className=' outline-none p-2 border-b border-hover-2 placeholder:text-sm'
+                                onChange={(e) => setEmail(e.target.value)}
+                                value={email}
+                            />
+                            <div className='flex justify-between items-center'>
+                                <Button
+                                    name='Back'
+                                    handleOnClick={() => setIsForgotPassword(false)}
+                                    style={`px-4 py-2 round-md text-white bg-gray-500 font-semibold rounded-md my-2`}
+                                />
+                                <Button
+                                    name='Submit'
+                                    handleOnClick={handleForgotPassword}
+                                />
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </div >}
             <img
                 src='https://img.freepik.com/premium-vector/geometric-gradient-technology-background_23-2149110132.jpg?size=626&ext=jpg&ga=GA1.1.1546980028.1703030400&semt=ais'
                 alt=''
@@ -122,6 +136,7 @@ const Login = () => {
                     <div className='flex items-center justify-between mt-2 text-sm'>
                         {isRegister || <span
                             className='text-gray-500 hover:underline hover:italic cursor-pointer'
+                            onClick={() => setIsForgotPassword(!isForgotPassword)}
                         >
                             Forgot your Account?
                         </span>}
@@ -134,7 +149,7 @@ const Login = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

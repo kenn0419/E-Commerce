@@ -134,7 +134,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
     const resetToken = await user.createPasswordChangeToken();
     await user.save();
     const html = `
-        <b style="color: pink; font-size: 25px;">Please click the below link to change password</b>. 
+        <b style="color: pink; font-size: 25px;">Please click the below link to reset password</b>. 
         <a href=${process.env.CLIENT_URL}/reset-password/${resetToken}>Click here!!!</a>
     `
 
@@ -146,8 +146,8 @@ const forgetPassword = asyncHandler(async (req, res) => {
 
     const result = await sendMail(data);
     return res.status(200).json({
-        success: result ? true : false,
-        result
+        success: result.response?.includes('OK') ? true : false,
+        message: result.response?.includes('OK') ? 'Please check email to receive code' : 'Wrong. Please try again!'
     })
 })
 

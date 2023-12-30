@@ -4,7 +4,8 @@ import { Login, Home, Public, Blog, DetailProduct, Service, Product, FAQ, FinalR
 import path from './ultils/path';
 import { getCategory } from './store/app/asyncAction';
 import { useDispatch } from 'react-redux';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const dispatch = useDispatch();
@@ -26,7 +27,20 @@ function App() {
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />
         <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
       </Routes>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
+
   );
 }
 
