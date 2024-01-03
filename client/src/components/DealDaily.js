@@ -68,7 +68,7 @@ const DealDaily = () => {
                 <span className='uppercase flex-5 font-semibold text-[20px] flex justify-center text-gray-600'>Daily Deals</span>
                 <span className='flex-3'></span>
             </div>
-            <div className='w-full flex flex-col px-4 items-center gap-2'>
+            <div className='w-full flex flex-col px-4 items-center gap-2 mt-4'>
                 <img
                     src={dealDaily?.thumb || no_image}
                     alt=''
@@ -86,7 +86,7 @@ const DealDaily = () => {
                 </div>
                 <button
                     type='button'
-                    className='flex gap-2 justify-center items-center w-full bg-hover p-3 text-white hover:bg-[#333] font-medium'
+                    className='flex gap-2 justify-center items-center w-full bg-hover p-3 text-white hover:bg-[#333] font-medium mt-4'
                 >
                     <TiThMenu />
                     <span className='uppercase'>Options</span>

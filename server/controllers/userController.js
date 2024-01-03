@@ -21,41 +21,45 @@ const register = asyncHandler(async (req, res) => {
         throw new Error('User has existed');
     }
     const token = makeToken();
-    res.cookie('dataRegister', { ...req.body, token }, { httpOnly: true, maxAge: 15 * 60 * 1000 })
-    const html = `
-        <b style="color: pink; font-size: 25px;">Please click the below link to active account. This link will have a period of 15 minutes from now on</b>. 
-        <a href=${process.env.URL_SERVER}/api/user/final-register/${token}>Click here!!!</a>
-    `
-    await sendMail({ email, html, subject: 'Verify account' })
+    const newUser = await User.create({
+        email: btoa(email),
+        password,
+        firstname,
+        lastname,
+        mobile,
+        registerToken: token
+    })
+    if (newUser) {
+        const html = `
+            <h2>Please copy this code: <span style="color: pink; font-size: 25px;">${token}</span> to active account. This code will have a period of 15 minutes from now on</h2>. 
+        `
+        await sendMail({ email, html, subject: 'Verify account' })
+    }
+    setTimeout(async () => {
+        await User.deleteOne({ registerToken: token })
+    }, 15 * 60 * 1000);
     return res.json({
-        success: true,
-        message: 'Please check your email to active account'
+        success: newUser ? true : false,
+        message: newUser ? 'Please check your email to active account' : 'Something went wrong'
     })
 })
 
 const finalRegister = asyncHandler(async (req, res) => {
-    const cookie = req.cookies;
-    const token = req.params.token;
-    if (!cookie || cookie?.dataRegister?.token !== token) {
-        return res.redirect(`${process.env.CLIENT_URL}/final-register/failed`)
+    const { token } = req.params;
+    const notActiveUser = await User.findOne({ registerToken: token });
+    if (notActiveUser) {
+        notActiveUser.email = atob(notActiveUser.email);
+        notActiveUser.registerToken = '';
+        await notActiveUser.save();
+        return res.json({
+            success: true,
+            message: 'Account is activated successfully. Please to sign in!'
+        })
     }
-    const newUser = await User.create({
-        email: cookie?.dataRegister?.email,
-        firstname: cookie?.dataRegister?.firstname,
-        lastname: cookie?.dataRegister?.lastname,
-        email: cookie?.dataRegister?.email,
-        mobile: cookie?.dataRegister?.mobile,
-        password: cookie?.dataRegister?.password,
-    });
-    res.clearCookie('dataRegister', {
-        httpOnly: true,
-        secure: true
+    return res.json({
+        success: false,
+        message: 'Verify code is correctly or it is expired. Please sign up again',
     })
-    if (newUser) {
-        return res.redirect(`${process.env.CLIENT_URL}/final-register/success`)
-    } else {
-        return res.redirect(`${process.env.CLIENT_URL}/final-register/failed`)
-    }
 })
 
 const login = asyncHandler(async (req, res) => {

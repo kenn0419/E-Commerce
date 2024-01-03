@@ -24,3 +24,40 @@ export const secondsToHms = (d) => {
     const s = Math.floor(d % 3600 % 60);
     return ({ h, m, s });
 }
+
+export const validate = (payload, setInvalidFields) => {
+    let invalidFields = 0;
+    const formatPayload = Object.entries(payload);
+    for (let arr of formatPayload) {
+        if (arr[1].trim() === '') {
+            invalidFields++;
+            setInvalidFields(prev => [...prev, { name: arr[0], message: 'Require this field' }])
+        }
+    }
+    for (let arr of formatPayload) {
+        switch (arr[0]) {
+            case 'email':
+                const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                if (!arr[1].match(regex)) {
+                    invalidFields++;
+                    setInvalidFields(prev => [...prev, { name: arr[0], message: 'Invalid email' }])
+                }
+                break;
+            case 'password':
+                if (arr[1].length < 6) {
+                    invalidFields++;
+                    setInvalidFields(prev => [...prev, { name: arr[0], message: 'Require a password of more than 6 characters' }])
+                }
+                break;
+            case 'mobile':
+                if (arr[1].length !== 10) {
+                    invalidFields++;
+                    setInvalidFields(prev => [...prev, { name: arr[0], message: 'Phone requirement has 10 characters' }])
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    return invalidFields;
+}

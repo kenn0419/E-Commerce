@@ -1,3 +1,3 @@
 export * from './app';
 export { apiGetProduct } from './product';
-export { apiRegister, apiLogin, apiForgotPassword, apiResetPassword } from './user';
+export { apiRegister, apiLogin, apiForgotPassword, apiResetPassword, apiFinalRegister } from './user';
