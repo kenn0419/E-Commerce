@@ -23,7 +23,7 @@ const getProduct = asyncHandler(async (req, res) => {
     const product = await Product.findById(pid);
     return res.status(200).json({
         success: product ? true : false,
-        newProduct: product,
+        productData: product,
     })
 })
 

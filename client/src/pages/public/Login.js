@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { InputField, Button } from '../../components'
 import { apiFinalRegister, apiForgotPassword, apiLogin, apiRegister } from '../../apis';
 import Swal from 'sweetalert2'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import path from '../../ultils/path';
 import { login } from '../../store/user/userSlice';
 import { useDispatch } from 'react-redux';
@@ -206,6 +206,7 @@ const Login = () => {
                             {isRegister ? 'You have a account. Sign in?' : 'Create Account'}
                         </span>
                     </div>
+                    <Link className='text-gray-500 hover:underline hover:italic cursor-pointer text-center block text-base' to={`/${path.HOME}`}>Go home</Link>
                 </div>
             </div>
         </div >

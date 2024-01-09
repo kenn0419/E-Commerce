@@ -1,6 +1,6 @@
 import React, { useEffect, useState, memo } from 'react';
 import icons from '../ultils/icon';
-import { apiGetProduct } from '../apis/product';
+import { apiGetProducts } from '../apis/product';
 import no_image from '../assets/no_image.png';
 import { formatMoney, renderStar, secondsToHms } from '../ultils/helper'
 import { CountDown } from './';
@@ -15,7 +15,7 @@ const DealDaily = () => {
     const [second, setSecond] = useState(0);
     const [expireTime, setExpireTime] = useState(false);
     const fetchDealDaily = async () => {
-        const response = await apiGetProduct({ limit: 1, page: Math.round(Math.random() * 10), totalRating: 5 });
+        const response = await apiGetProducts({ limit: 1, page: Math.round(Math.random() * 10), totalRating: 5 });
         if (response.success) {
             setDealDaily(response.productList[0]);
             const today = `${moment().format('MM/DD/YYYY')} 0:00:00`;

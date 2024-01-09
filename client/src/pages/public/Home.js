@@ -7,8 +7,8 @@ const Home = () => {
     const { newProducts } = useSelector(state => state.product)
     const { categories } = useSelector(state => state.app)
     return (
-        <>
-            <div className='w-main flex'>
+        <div className='w-main mt-6'>
+            <div className='flex'>
                 <div className='flex flex-col gap-5 w-[25%] flex-auto'>
                     <Sidebar />
                     <DealDaily />
@@ -21,7 +21,7 @@ const Home = () => {
             <div className='mt-7'>
                 <FeartureProduct />
             </div>
-            <div className='my-8 w-full'>
+            <div className='my-8'>
                 <h3 className='uppercase text-[20px] font-semibold py-[15px] border-hover border-b-2'>New Arrivals</h3>
                 <div className='mt-7 mx-[-10px]'>
                     <CustomSlider
@@ -57,7 +57,7 @@ const Home = () => {
             <div>
                 <h3 className='uppercase text-[20px] font-semibold py-[15px] border-hover border-b-2'>Blog posts</h3>
             </div>
-        </>
+        </div>
     )
 }
 

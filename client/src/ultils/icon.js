@@ -3,6 +3,7 @@ import { MdEmail, MdOutlineKeyboardArrowRight, MdLocationOn } from "react-icons/
 import { IoBagSharp } from "react-icons/io5";
 import { FaStar } from "react-icons/fa6";
 import { TiThMenu } from "react-icons/ti";
+import { FiLogOut } from "react-icons/fi";
 
 const icons = {
     FaPhoneAlt,
@@ -16,6 +17,7 @@ const icons = {
     FaHeart,
     MdOutlineKeyboardArrowRight,
     MdLocationOn,
+    FiLogOut,
 }
 
 export default icons

@@ -25,12 +25,13 @@ const Header = () => {
                     </span>
                     <span className='font-light'>Online Support 24/7</span>
                 </div>
-                <div className='flex items-center gap-2 justify-center px-5 border-r'>
-                    <IoBagSharp color='red' />
+                <div className='flex items-center gap-2 justify-center px-5 border-r cursor-pointer'>
+                    <IoBagSharp color='red' size={18} />
                     <span>0 item</span>
                 </div>
-                <div className='flex items-center px-5'>
-                    <FaUser size={20} />
+                <div className='flex justify-center items-center px-5 gap-1 hover:underline cursor-pointer'>
+                    <FaUser size={18} />
+                    <span>Profile</span>
                 </div>
             </div>
         </div>
