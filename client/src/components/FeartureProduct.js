@@ -7,7 +7,7 @@ const FeartureProduct = () => {
     const fetchProducts = async () => {
         const response = await apiGetProducts({ limit: 9, totalRating: 5 });
         if (response.success) {
-            setProducts(response.productList);
+            setProducts(response.products);
         }
     }
     useEffect(() => {

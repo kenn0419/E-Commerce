@@ -1,12 +1,16 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { apiGetProduct } from '../../apis';
+import Breadcrumbs from '../../components/Breadcrumbs';
 
 const DetailProduct = () => {
-    const { pid, title } = useParams();
+    const { pid, title, category } = useParams();
+    const [product, setProduct] = useState({});
     const fetchDetailProduct = async () => {
         const response = await apiGetProduct(pid);
-        console.log(response);
+        if (response.success) {
+            setProduct(response.productData);
+        }
     }
     useEffect(() => {
         fetchDetailProduct();
@@ -16,6 +20,7 @@ const DetailProduct = () => {
             <div className='h-[81px] bg-gray-100 flex justify-center items-center'>
                 <div className='w-main'>
                     <h3 className='font-semibold uppercase'>{title}</h3>
+                    <Breadcrumbs title={title} category={category} />
                 </div>
             </div>
         </div>

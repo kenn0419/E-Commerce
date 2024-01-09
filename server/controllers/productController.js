@@ -71,7 +71,7 @@ const getProducts = asyncHandler(async (req, res) => {
     return res.status(200).json({
         success: products ? true : false,
         counts: products.length,
-        productList: products,
+        products: products,
     })
 })
 

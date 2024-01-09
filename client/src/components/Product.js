@@ -17,7 +17,7 @@ const Product = ({ productData, isNew, pid }) => {
         <div className='w-full text-base px-[10px]'>
             <Link
                 className='w-full border p-[15px] flex flex-col items-center gap-2'
-                to={`/${path.DETAIL_PRODUCT}/${productData?._id}/${productData?.title}`}
+                to={`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`}
                 onMouseEnter={e => setIsShowOptions(true)}
                 onMouseLeave={e => setIsShowOptions(false)}
             >

@@ -7,5 +7,5 @@ export const getNewProducts = createAsyncThunk('product/newProducts', async (dat
     if (!response.success) {
         return rejectWithValue(response);
     }
-    return response.productList;
+    return response.products;
 })
