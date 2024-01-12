@@ -3,7 +3,7 @@ import React, { memo } from 'react'
 import Slider from 'react-slick';
 import { Product } from './'
 
-var settings = {
+const settings = {
     dots: true,
     infinite: true,
     speed: 500,

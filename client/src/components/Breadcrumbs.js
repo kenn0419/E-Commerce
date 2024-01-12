@@ -11,7 +11,6 @@ const Breadcrumbs = ({ title, category }) => {
         { path: "/:category/:pid/:title", breadcrumb: title }
     ];
     const breadcrumbs = useBreadcrumbs(routes);
-    console.log(breadcrumbs);
     return (
         <div className='text-sm flex items-center gap-1'>
             {breadcrumbs?.filter(item => !item.match.route === false).map(({ match, breadcrumb }, index, self) => (
