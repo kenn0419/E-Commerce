@@ -1,15 +1,13 @@
 import React from 'react'
 
-const Button = ({ name, handleOnClick, style, iconsBefore, iconsAfter, fw }) => {
+const Button = ({ children, handleOnClick, style, fw }) => {
     return (
         <button
             type='button'
-            className={style ? style : `px-4 py-2 round-md text-white bg-hover font-semibold rounded-md my-2 ${fw}`}
+            className={style ? style : `p-2 round-md text-white bg-hover font-semibold rounded-md my-2 ${fw}`}
             onClick={() => { handleOnClick && handleOnClick() }}
         >
-            {iconsBefore}
-            <span>{name}</span>
-            {iconsAfter}
+            {children}
         </button>
     )
 }

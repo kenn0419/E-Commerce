@@ -42,3 +42,9 @@
     content: '\276F';
     font-size: 30px;
 }
+
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

@@ -14,7 +14,7 @@ export const renderStar = (starNumbers, size) => {
     for (let j = 0; j < (5 - starNumbers); j++) {
         stars.push(<FaRegStar key={`regstar ${j}`} color='orange' size={size || 16} />);
     }
-    return stars
+    return stars;
 }
 
 export const secondsToHms = (d) => {
