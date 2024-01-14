@@ -1,10 +1,11 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { apiGetProduct } from '../../apis';
-import { Breadcrumbs, Button, SelectQuantity } from '../../components';
+import { apiGetProduct, apiGetProducts } from '../../apis';
+import { Breadcrumbs, Button, CustomSlider, ExtraInfo, ProductInfo, SelectQuantity } from '../../components';
 import Slider from 'react-slick';
 import ReactImageMagnify from 'react-image-magnify';
 import { formatMoney, renderStar } from '../../ultils/helper';
+import { extraInfo } from '../../ultils/contants';
 
 const settings = {
     dots: true,
@@ -18,10 +19,17 @@ const DetailProduct = () => {
     const { pid, title, category } = useParams();
     const [product, setProduct] = useState({});
     const [quantity, setQuantity] = useState(1);
+    const [relativeProducts, setRelativeProducts] = useState([]);
     const fetchDetailProduct = async () => {
         const response = await apiGetProduct(pid);
         if (response.success) {
             setProduct(response.productData);
+        }
+    }
+    const fetchRelativeProducts = async () => {
+        const response = await apiGetProducts({ category: category });
+        if (response.success) {
+            setRelativeProducts(response.products);
         }
     }
     const handleQuantiTy = useCallback((number) => {
@@ -41,6 +49,7 @@ const DetailProduct = () => {
     }, [quantity])
     useEffect(() => {
         fetchDetailProduct();
+        fetchRelativeProducts();
     }, [pid])
     return (
         <div className='w-full'>
@@ -104,8 +113,15 @@ const DetailProduct = () => {
                     </div>
                 </div>
                 <div className='w-1/5'>
-                    Bonus
+                    {extraInfo.map(item => <ExtraInfo title={item.title} sub={item.sub} iconImage={<item.icon color='white' size={18} />} id={item.id} />)}
                 </div>
+            </div>
+            <div className='w-main mx-auto mt-2'>
+                <ProductInfo />
+            </div>
+            <div className='w-main mx-auto mt-4'>
+                <h3 className='uppercase text-[20px] font-semibold py-[10px] border-hover border-b-2 mb-5'>OTHER CUSTOMERS ALSO BUY:</h3>
+                <CustomSlider products={relativeProducts} normal={true} />
             </div>
         </div>
     )

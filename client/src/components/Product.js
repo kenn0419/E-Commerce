@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import path from '../ultils/path';
 
 
-const Product = ({ productData, isNew, pid }) => {
+const Product = ({ productData, isNew, pid, normal }) => {
     const { FaHeart, FaEye, TiThMenu } = icons;
     const [isShowOptions, setIsShowOptions] = useState(false);
     return (
@@ -34,7 +34,7 @@ const Product = ({ productData, isNew, pid }) => {
                         alt=''
                         className='w-[243px] h-[243px] object-contain'
                     />
-                    <img src={isNew ? label : trending} alt='' className='w-[70px] h-[25px] absolute top-0 right-0' />
+                    {!normal && <img src={isNew ? label : trending} alt='' className='w-[70px] h-[25px] absolute top-0 right-0' />}
                 </div>
                 <div className='flex flex-col items-start gap-1 w-full'>
                     <span className='line-clamp-1'>{productData.title}</span>

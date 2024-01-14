@@ -1,4 +1,4 @@
-import { FaPhoneAlt, FaUser, FaRegStar, FaHeart, FaEye } from "react-icons/fa";
+import { FaPhoneAlt, FaUser, FaRegStar, FaHeart, FaEye, FaShieldAlt, FaTruck, FaGift, FaReply, FaTty } from "react-icons/fa";
 import { MdEmail, MdOutlineKeyboardArrowRight, MdLocationOn } from "react-icons/md";
 import { IoBagSharp } from "react-icons/io5";
 import { FaStar } from "react-icons/fa6";
@@ -18,6 +18,11 @@ const icons = {
     MdOutlineKeyboardArrowRight,
     MdLocationOn,
     FiLogOut,
+    FaShieldAlt,
+    FaTruck,
+    FaGift,
+    FaReply,
+    FaTty,
 }
 
 export default icons

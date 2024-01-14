@@ -3,7 +3,7 @@ import React, { memo } from 'react'
 const SelectQuantity = ({ quantity, handleQuantiTy, handleChangeQuantity, remainQuantity }) => {
     return (
         <div className='flex items-center mt-2'>
-            <span>Số lượng: </span>
+            <span>Quantity:</span>
             <span
                 className='font-semibold text-[24px] p-2 rounded-l-full border ml-1 cursor-pointer'
                 onClick={() => handleChangeQuantity('minus')}
@@ -12,7 +12,7 @@ const SelectQuantity = ({ quantity, handleQuantiTy, handleChangeQuantity, remain
             </span>
             <input
                 type='number'
-                className='border p-2 w-[70px] outline-none text-center'
+                className='border p-2 w-[60px] outline-none text-center'
                 value={quantity}
                 onChange={(e) => handleQuantiTy(e.target.value)}
             />

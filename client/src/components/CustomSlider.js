@@ -10,7 +10,7 @@ const settings = {
     slidesToShow: 3,
     slidesToScroll: 1
 };
-const CustomSlider = ({ products, active }) => {
+const CustomSlider = ({ products, active, normal }) => {
     return (
         <div className=''>
             {products && <Slider {...settings}>
@@ -20,6 +20,7 @@ const CustomSlider = ({ products, active }) => {
                         key={item._id}
                         productData={item}
                         isNew={active === 1 ? true : false}
+                        normal={normal}
                     />
                 ))}
             </Slider>}
