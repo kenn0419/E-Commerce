@@ -11,7 +11,7 @@ const settings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 3,
+    // slidesToShow: 5,
     slidesToScroll: 1
 };
 
@@ -76,13 +76,11 @@ const DetailProduct = () => {
                         }} />
                     </div>
                     <div className='w-[458px]'>
-                        {<Slider {...settings}>
+                        <Slider {...settings}>
                             {product?.images?.map((item, index) => (
-                                <div key={index}>
-                                    <img src={item} alt='' className='w-[143px] h-[143px] object-contain border' />
-                                </div>
+                                <img src={item} alt='' className='h-[143px] w-[143px] object-contain border' />
                             ))}
-                        </Slider>}
+                        </Slider>
                     </div>
                 </div>
                 <div className='w-2/5 flex flex-col'>

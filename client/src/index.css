@@ -8,7 +8,7 @@
     display: none !important;
 }
 
-.slick-prev {
+.custome-slider button.slick-prev {
     left: 10px;
     z-index: 99;
 }
@@ -26,7 +26,7 @@
     font-size: 30px;
 }
 
-.slick-next {
+.custome-slider button.slick-next {
     z-index: 99;
     right: 50px;
 }
@@ -47,4 +47,19 @@ input::-webkit-inner-spin-button,
 input::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+/* .my-masonry-grid {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    width: auto;
+}
+
+.my-masonry-grid_column {
+    background-clip: padding-box;
+} */
+
+.my-masonry-grid_column>div {
+    margin-bottom: 20px;
 }

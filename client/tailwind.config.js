@@ -12,6 +12,9 @@ module.exports = {
       square: 'square'
     },
     extend: {
+      boxShadow: {
+        'main': '0 0 0 1px #1a1b188c;',
+      },
       width: {
         main: '1220px',
 
