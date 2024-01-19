@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { Breadcrumbs, Product, SearchItem } from '../../components';
 import { apiGetProducts } from '../../apis';
 import Masonry from 'react-masonry-css'
@@ -15,6 +15,7 @@ const Products = () => {
     const { category } = useParams();
     const [products, setProducts] = useState([]);
     const [activeClick, setActiveClick] = useState();
+    const [params] = useSearchParams();
     const fetchApiProductsByCategory = async (queries) => {
         const response = await apiGetProducts(queries);
         if (response.success) {
@@ -29,8 +30,16 @@ const Products = () => {
         }
     }, [activeClick])
     useEffect(() => {
-        fetchApiProductsByCategory();
-    }, [])
+        let param = [];
+        for (let i of params.entries()) {
+            param.push(i);
+        }
+        const queries = {};
+        for (let i of param) {
+            queries[i[0]] = i[1];
+        }
+        fetchApiProductsByCategory(queries);
+    }, [params])
     return (
         <div className='w-full'>
             <div className='h-[81px] bg-gray-100 flex flex-col justify-center items-center'>

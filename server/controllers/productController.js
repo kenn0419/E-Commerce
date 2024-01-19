@@ -52,6 +52,12 @@ const getProducts = asyncHandler(async (req, res) => {
             $options: 'i'
         }
     }
+    if (queries?.color) {
+        formatedQuery.color = {
+            $regex: queries.color,
+            $options: 'i'
+        }
+    }
     let queryCommand = Product.find(formatedQuery);
 
     //Sorting

@@ -114,3 +114,15 @@ export const productTabs = [
         content: ''
     },
 ]
+
+export const colors = [
+    'black',
+    'brown',
+    'gray',
+    'white',
+    'pink',
+    'yellow',
+    'orange',
+    'purple',
+    'blue',
+]
