@@ -11,7 +11,7 @@ const settings = {
     dots: true,
     infinite: true,
     speed: 500,
-    // slidesToShow: 5,
+    slidesToShow: 3,
     slidesToScroll: 1
 };
 
@@ -20,10 +20,12 @@ const DetailProduct = () => {
     const [product, setProduct] = useState({});
     const [quantity, setQuantity] = useState(1);
     const [relativeProducts, setRelativeProducts] = useState([]);
+    const [currentImage, setCurrentImage] = useState();
     const fetchDetailProduct = async () => {
         const response = await apiGetProduct(pid);
         if (response.success) {
             setProduct(response.productData);
+            setCurrentImage(response?.productData.thumb);
         }
     }
     const fetchRelativeProducts = async () => {
@@ -31,6 +33,9 @@ const DetailProduct = () => {
         if (response.success) {
             setRelativeProducts(response.products);
         }
+    }
+    const handleClickImage = (item) => {
+        setCurrentImage(item);
     }
     const handleQuantiTy = useCallback((number) => {
         if (!Number(number) || Number(number) < 1) return;
@@ -61,15 +66,15 @@ const DetailProduct = () => {
             </div>
             <div className='w-main mx-auto mt-4 flex gap-3'>
                 <div className='w-2/5 flex flex-col gap-4'>
-                    <div className='w-[458px] h-[458px] border'>
+                    <div className='w-[458px] h-[458px] border overflow-hidden'>
                         <ReactImageMagnify {...{
                             smallImage: {
                                 alt: '',
                                 isFluidWidth: true,
-                                src: product?.thumb
+                                src: currentImage
                             },
                             largeImage: {
-                                src: product?.thumb,
+                                src: currentImage,
                                 width: 1200,
                                 height: 1200
                             }
@@ -78,18 +83,28 @@ const DetailProduct = () => {
                     <div className='w-[458px]'>
                         <Slider {...settings}>
                             {product?.images?.map((item, index) => (
-                                <img src={item} alt='' className='h-[143px] w-[143px] object-contain border' />
+                                <img
+                                    src={item}
+                                    alt=''
+                                    className='h-[143px] w-[143px] object-contain border cursor-pointer'
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleClickImage(item)
+                                    }}
+                                />
                             ))}
                         </Slider>
                     </div>
                 </div>
                 <div className='w-2/5 flex flex-col'>
                     <h3 className='text-[30px] font-semibold'>{formatMoney(product.price)}</h3>
-                    <div className='flex items-start mt-4'>
-                        {renderStar(product.totalRating, 18).map((item, index) => (<span key={index}>{item}</span>))}
-                        <span className='text-sm pl-2'>{product.ratings?.length} reviews</span>
+                    <div className='flex items-center gap-4'>
+                        <div className='flex items-start mt-4'>
+                            {renderStar(product.totalRating, 18).map((item, index) => (<span key={index}>{item}</span>))}
+                            <span className='text-sm pl-2'>{product.ratings?.length} reviews</span>
+                        </div>
+                        <span className='text-sm text-gray-500 mt-4'>{`(Sold: ${product.sold} products)`}</span>
                     </div>
-                    <span className='text-sm text-gray-500 mt-4'>{`Số lượng đã bán: ${product.sold} sản phẩm`}</span>
                     <div className='mt-5'>
                         <ul className='px-5'>
                             {product.description?.map(item => (
@@ -115,7 +130,10 @@ const DetailProduct = () => {
                 </div>
             </div>
             <div className='w-main mx-auto mt-2'>
-                <ProductInfo />
+                <ProductInfo
+                    totalRatings={product.totalRating}
+                    totalCount={product.ratings.length}
+                />
             </div>
             <div className='w-main mx-auto mt-4'>
                 <h3 className='uppercase text-[20px] font-semibold py-[10px] border-hover border-b-2 mb-5'>OTHER CUSTOMERS ALSO BUY:</h3>

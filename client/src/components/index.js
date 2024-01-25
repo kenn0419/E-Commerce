@@ -20,3 +20,5 @@ export { default as ExtraInfo } from './ExtraInfo';
 export { default as ProductInfo } from './ProductInfo';
 export { default as SearchItem } from './SearchItem';
 export { default as SelectField } from './SelectField';
+export { default as Rating } from './Rating';
+export { default as VoteBar } from './VoteBar';

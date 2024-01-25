@@ -8,7 +8,7 @@
     display: none !important;
 }
 
-.custome-slider button.slick-prev {
+button.slick-prev {
     left: 10px;
     z-index: 99;
 }
@@ -26,7 +26,7 @@
     font-size: 30px;
 }
 
-.custome-slider button.slick-next {
+button.slick-next {
     z-index: 99;
     right: 50px;
 }

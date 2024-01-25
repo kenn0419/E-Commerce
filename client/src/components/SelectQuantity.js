@@ -22,7 +22,7 @@ const SelectQuantity = ({ quantity, handleQuantiTy, handleChangeQuantity, remain
             >
                 +
             </span>
-            <span>{`${remainQuantity} sản phẩm có sẵn`}</span>
+            <span>{`${remainQuantity} products in stock`}</span>
         </div>
     )
 }
