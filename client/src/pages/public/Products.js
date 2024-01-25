@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
-import { Breadcrumbs, Product, SearchItem } from '../../components';
+import React, { memo, useCallback, useEffect, useState } from 'react'
+import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Breadcrumbs, Product, SearchItem, SelectField } from '../../components';
 import { apiGetProducts } from '../../apis';
 import Masonry from 'react-masonry-css'
+import { sorts } from '../../ultils/contants';
 
 const breakpointColumnsObj = {
     default: 4,
@@ -12,10 +13,12 @@ const breakpointColumnsObj = {
 };
 
 const Products = () => {
+    const navigate = useNavigate();
     const { category } = useParams();
-    const [products, setProducts] = useState([]);
-    const [activeClick, setActiveClick] = useState();
     const [params] = useSearchParams();
+    const [products, setProducts] = useState([]);
+    const [sort, setSort] = useState('');
+    const [activeClick, setActiveClick] = useState();
     const fetchApiProductsByCategory = async (queries) => {
         const response = await apiGetProducts(queries);
         if (response.success) {
@@ -29,6 +32,9 @@ const Products = () => {
             setActiveClick(name);
         }
     }, [activeClick])
+    const changeValue = useCallback((value) => {
+        setSort(value);
+    }, [sort])
     useEffect(() => {
         let param = [];
         for (let i of params.entries()) {
@@ -38,8 +44,35 @@ const Products = () => {
         for (let i of param) {
             queries[i[0]] = i[1];
         }
-        fetchApiProductsByCategory(queries);
+        let priceQuery = {};
+        if (queries.from && queries.to) {
+            priceQuery = {
+                '$and': [
+                    { price: { gte: queries.from } },
+                    { price: { lte: queries.to } },
+                ]
+            }
+        }
+        if (queries.from) {
+            queries.price = { gte: queries.from };
+        }
+        if (queries.to) {
+            queries.price = { lte: queries.to };
+        }
+        delete queries.from;
+        delete queries.to;
+        fetchApiProductsByCategory({ ...priceQuery, ...queries });
     }, [params])
+    useEffect(() => {
+        if (sort) {
+            navigate({
+                pathname: `/${category}`,
+                search: createSearchParams({ sort }).toString(),
+            })
+        } else {
+            navigate(`/${category}`);
+        }
+    }, [sort])
     return (
         <div className='w-full'>
             <div className='h-[81px] bg-gray-100 flex flex-col justify-center items-center'>
@@ -49,7 +82,7 @@ const Products = () => {
                 </div>
             </div>
             <div className='w-main mx-auto mt-5'>
-                <div className='flex justify-between p-2 border'>
+                <div className='flex justify-between p-2 border items-center'>
                     <div className='w-4/5'>
                         <span className='text-base text-[#505050] font-semibold'>Filter by</span>
                         <div className='flex gap-1 mt-2'>
@@ -66,7 +99,16 @@ const Products = () => {
                             />
                         </div>
                     </div>
-                    <div className='w-1/5'>search</div>
+                    <div className='w-1/5'>
+                        <span className='text-base text-[#505050] font-semibold'>Sort by</span>
+                        <div>
+                            <SelectField
+                                value={sort}
+                                options={sorts}
+                                changeValue={changeValue}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
             <div className='w-main mx-auto mt-5'>
@@ -89,4 +131,4 @@ const Products = () => {
     )
 }
 
-export default Products
+export default memo(Products)

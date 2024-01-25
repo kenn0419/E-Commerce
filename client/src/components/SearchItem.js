@@ -4,6 +4,9 @@ import { colors } from '../ultils/contants';
 import { createSearchParams, useNavigate, useParams } from 'react-router-dom'
 import { apiGetProducts } from '../apis'
 import { formatMoney } from '../ultils/helper'
+import useDebounce from '../hooks/useDebounce'
+import { toast } from 'react-toastify';
+
 
 const SearchItem = ({ name, activeClick, handleChangeActiveFilter, type = 'checkbox' }) => {
     const { IoIosArrowDown } = icons;
@@ -38,6 +41,8 @@ const SearchItem = ({ name, activeClick, handleChangeActiveFilter, type = 'check
                     color: selected.join(',')
                 }).toString(),
             })
+        } else {
+            navigate(`/${category}`)
         }
     }, [selected])
     useEffect(() => {
@@ -46,14 +51,25 @@ const SearchItem = ({ name, activeClick, handleChangeActiveFilter, type = 'check
         }
     }, [type])
     useEffect(() => {
-        // const validPrice = price.filter(item => +item.from > 0 && +item.to > 0)
-        // if (price.from > 0) {
-        //     navigate({
-        //         pathname: `/${category}`,
-        //         search: createSearchParams(price).toString(),
-        //     })
-        // }
+        if (Number(price.from) > Number(price.to)) {
+            toast.error('Price is invalid!!!');
+        }
     }, [price])
+    const debounceFrom = useDebounce(price.from, 500);
+    const debounceTo = useDebounce(price.to, 500);
+    useEffect(() => {
+        const data = {};
+        if (Number(price.from) > 0) {
+            data.from = price.from;
+        }
+        if (Number(price.to) > 0) {
+            data.to = price.to;
+        }
+        navigate({
+            pathname: `/${category}`,
+            search: createSearchParams(data).toString(),
+        })
+    }, [debounceFrom, debounceTo])
     return (
         <div
             className='relative p-4 text-xs text-[#505050] border border-gray-800 flex justify-between items-center gap-4 cursor-pointer'
@@ -72,6 +88,7 @@ const SearchItem = ({ name, activeClick, handleChangeActiveFilter, type = 'check
                                     onClick={(e) => {
                                         setSelected([]);
                                         e.stopPropagation();
+                                        handleChangeActiveFilter();
                                     }}
                                 >
                                     Reset
@@ -85,7 +102,6 @@ const SearchItem = ({ name, activeClick, handleChangeActiveFilter, type = 'check
                                         type='checkbox'
                                         id={color}
                                         value={color}
-                                        className='w-4 h-4 text-base border-none cursor-pointer'
                                         checked={selected.some(item => item === color)}
                                         onChange={(e) => handleSelect(e)}
                                     />
@@ -94,15 +110,16 @@ const SearchItem = ({ name, activeClick, handleChangeActiveFilter, type = 'check
                             ))}
                         </div>
                     </div>}
-                    {type === 'input' && <div>
-                        <div className='border-b border-gray-300 w-full' onClick={e => e.stopPropagation()}>
+                    {type === 'input' && <div onClick={e => e.stopPropagation()}>
+                        <div className='border-b border-gray-300 w-full'>
                             <div className='p-4 flex items-center justify-between gap-4'>
                                 <span className='text-sm'>{`The highest price is ${formatMoney(highPrice)}`}</span>
                                 <span
                                     className='underline cursor-pointer'
                                     onClick={(e) => {
-                                        setSelected([]);
                                         e.stopPropagation();
+                                        setPrice(prev => ({ ...prev, from: '', to: '' }));
+                                        handleChangeActiveFilter();
                                     }}
                                 >
                                     Reset
