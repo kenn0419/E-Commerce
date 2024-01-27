@@ -19,6 +19,7 @@ const DetailProduct = () => {
     const { pid, title, category } = useParams();
     const [product, setProduct] = useState({});
     const [quantity, setQuantity] = useState(1);
+    const [update, setUpdate] = useState(false);
     const [relativeProducts, setRelativeProducts] = useState([]);
     const [currentImage, setCurrentImage] = useState();
     const fetchDetailProduct = async () => {
@@ -41,6 +42,9 @@ const DetailProduct = () => {
         if (!Number(number) || Number(number) < 1) return;
         setQuantity(number);
     }, [quantity])
+    const reRender = useCallback(() => {
+        setUpdate(!update);
+    }, [update])
     const handleChangeQuantity = useCallback((option) => {
         if (Number(quantity) === 1 && option === 'minus') {
             return;
@@ -53,10 +57,17 @@ const DetailProduct = () => {
         }
     }, [quantity])
     useEffect(() => {
-        fetchDetailProduct();
-        fetchRelativeProducts();
-        window.scrollTo(0, 0);
+        if (pid) {
+            fetchDetailProduct();
+            fetchRelativeProducts();
+        }
     }, [pid])
+    useEffect(() => {
+        if (pid) {
+            fetchDetailProduct();
+            fetchRelativeProducts();
+        }
+    }, [update])
     return (
         <div className='w-full'>
             <div className='h-[81px] bg-gray-100 flex justify-center items-center'>
@@ -133,8 +144,10 @@ const DetailProduct = () => {
             <div className='w-main mx-auto mt-2'>
                 <ProductInfo
                     totalRatings={product.totalRating}
-                    totalCount={product?.ratings?.length}
+                    ratings={product?.ratings}
                     nameProduct={product?.title}
+                    pid={product?._id}
+                    reRender={reRender}
                 />
             </div>
             <div className='w-main mx-auto mt-4'>

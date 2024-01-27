@@ -188,10 +188,9 @@ const Login = () => {
                         setInvalidFields={setInvalidFields}
                     />
                     <Button
-                        name={isRegister ? 'Register' : 'Login'}
                         handleOnClick={handleSubmit}
                         fw='w-full'
-                    />
+                    >{isRegister ? 'Register' : 'Login'}</Button>
                     <div className='flex items-center justify-between mt-2 text-sm'>
                         {isRegister || <span
                             className='text-gray-500 hover:underline hover:italic cursor-pointer'

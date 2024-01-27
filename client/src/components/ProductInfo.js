@@ -2,13 +2,60 @@ import React, { memo, useCallback, useState } from 'react'
 import { productTabs } from '../ultils/contants'
 import { Button, VoteBar, VoteOptions } from './';
 import { renderStar } from '../ultils/helper';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { showModal } from '../store/app/appSlice';
+import { apiRatings } from '../apis';
+import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import path from '../ultils/path';
 
 
-const ProductInfo = ({ totalRatings, totalCount, nameProduct }) => {
+const ProductInfo = ({ totalRatings, ratings, nameProduct, pid, reRender }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { isLoggedIn, token } = useSelector(state => state.user);
     const [activeTab, setActiveTab] = useState(1);
+    const handleSubmitVote = async ({ comment, star }) => {
+        console.log(comment, star, pid)
+        if (!comment || !pid || !star) {
+            toast.error('Please vote when click submit');
+            return;
+        }
+        const response = await apiRatings({ star, comment, pid })
+        if (response.success) {
+            toast.success(response.message);
+            reRender();
+            dispatch(showModal({
+                isShowModal: false,
+                modalChildren: null
+            }))
+        }
+    }
+    const handleVoteNow = () => {
+        if (!isLoggedIn) {
+            Swal.fire({
+                text: 'Login to rate the product',
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Login',
+                title: 'Oops!',
+                showCancelButton: true,
+                showConfirmButton: true
+            }).then((rs) => {
+                if (rs.isConfirmed) {
+                    navigate(`/${path.LOGIN}`)
+                }
+            })
+        } else {
+            dispatch(showModal({
+                isShowModal: true,
+                modalChildren: <VoteOptions
+                    nameProduct={nameProduct}
+                    handleSubmitVote={handleSubmitVote}
+                />
+            }))
+        }
+    }
     return (
         <div>
             <div className='flex items-center gap-1 relative bottom-[-1.3px]'>
@@ -39,22 +86,25 @@ const ProductInfo = ({ totalRatings, totalCount, nameProduct }) => {
                                 <span key={index}>{item}</span>
                             ))}
                             </span>
-                            <span className='underline text-base'>{`${totalCount} reviews`}</span>
+                            <span className='underline text-base'>{`${ratings?.length} reviews`}</span>
                         </div>
                         <div className='flex-6 flex flex-col p-4 gap-2'>
                             {Array.from(Array(5).keys()).reverse().map(item => (
                                 <VoteBar
                                     key={item}
                                     number={item + 1}
-                                    ratingCount={2}
-                                    ratingTotal={5}
+                                    ratingCount={ratings?.length}
+                                    ratingTotal={ratings?.filter(rating => rating.star === item + 1)?.length}
                                 />
                             ))}
                         </div>
                     </div>
                     <div className='p-4 flex justify-center items-center flex-col'>
                         <span>How would you rate this product?</span>
-                        <Button handleOnClick={() => dispatch(showModal({ isShowModal: true, modalChildren: <VoteOptions nameProduct={nameProduct} /> }))}>Rate now!</Button>
+                        <Button handleOnClick={handleVoteNow}
+                        >
+                            Rate now!
+                        </Button>
                     </div>
                 </div>}
             </div>
