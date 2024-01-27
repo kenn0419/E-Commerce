@@ -55,6 +55,7 @@ const DetailProduct = () => {
     useEffect(() => {
         fetchDetailProduct();
         fetchRelativeProducts();
+        window.scrollTo(0, 0);
     }, [pid])
     return (
         <div className='w-full'>
@@ -132,7 +133,8 @@ const DetailProduct = () => {
             <div className='w-main mx-auto mt-2'>
                 <ProductInfo
                     totalRatings={product.totalRating}
-                    totalCount={product.ratings.length}
+                    totalCount={product?.ratings?.length}
+                    nameProduct={product?.title}
                 />
             </div>
             <div className='w-main mx-auto mt-4'>

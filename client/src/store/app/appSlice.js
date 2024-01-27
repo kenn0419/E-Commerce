@@ -6,14 +6,15 @@ export const appSlice = createSlice({
   initialState: {
     categories: null,
     isLoading: false,
-    currentUser: null,
+    isShowModal: false,
+    modalChildren: null,
   },
   //Code logic xử lý action thông thường
   reducers: {
-    logout: (state) => {
-      state.currentUser = null;
-      state.errorMessage = '';
-    },
+    showModal: (state, action) => {
+      state.isShowModal = action.payload.isShowModal;
+      state.modalChildren = action.payload.modalChildren;
+    }
   },
   // Code logic xử lý async action
   extraReducers: (builder) => {
@@ -36,6 +37,6 @@ export const appSlice = createSlice({
   },
 })
 
-// export const { } = appSlice.actions
+export const { showModal } = appSlice.actions
 
 export default appSlice.reducer
