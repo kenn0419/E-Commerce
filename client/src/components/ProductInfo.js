@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from 'react'
 import { productTabs } from '../ultils/contants'
-import { Button, VoteBar, VoteOptions } from './';
+import { Button, Comment, VoteBar, VoteOptions } from './';
 import { renderStar } from '../ultils/helper';
 import { useDispatch, useSelector } from 'react-redux';
 import { showModal } from '../store/app/appSlice';
@@ -17,12 +17,11 @@ const ProductInfo = ({ totalRatings, ratings, nameProduct, pid, reRender }) => {
     const { isLoggedIn, token } = useSelector(state => state.user);
     const [activeTab, setActiveTab] = useState(1);
     const handleSubmitVote = async ({ comment, star }) => {
-        console.log(comment, star, pid)
         if (!comment || !pid || !star) {
             toast.error('Please vote when click submit');
             return;
         }
-        const response = await apiRatings({ star, comment, pid })
+        const response = await apiRatings({ star, comment, pid, updatedAt: Date.now() })
         if (response.success) {
             toast.success(response.message);
             reRender();
@@ -69,44 +68,50 @@ const ProductInfo = ({ totalRatings, ratings, nameProduct, pid, reRender }) => {
                         {tab.name}
                     </span>
                 ))}
-                <span
-                    className={`py-2 px-4 bg-gray-200 ${activeTab === 5 && 'bg-white border-b-0'} border cursor-pointer text-[15px] uppercase`}
-                    onClick={() => setActiveTab(5)}
-                >
-                    Customer Reviews
-                </span>
+
             </div>
-            <div className='w-full border p-4 text-sm text-gray-500'>
+            <div className='w-full border p-4 text-sm text-gray-500 min-h-[300px]'>
                 {productTabs.find(tab => activeTab === tab.id)?.content}
-                {activeTab === 5 && <div className=' p-4'>
-                    <div className='flex'>
-                        <div className='flex-4 border-r border-gray-200 flex flex-col items-center justify-center'>
-                            <span className='text-2xl font-semibold text-gray-800'>{`${totalRatings}/5`}</span>
-                            <span className='flex gap-2 py-2'>{renderStar(totalRatings)?.map((item, index) => (
-                                <span key={index}>{item}</span>
-                            ))}
-                            </span>
-                            <span className='underline text-base'>{`${ratings?.length} reviews`}</span>
-                        </div>
-                        <div className='flex-6 flex flex-col p-4 gap-2'>
-                            {Array.from(Array(5).keys()).reverse().map(item => (
-                                <VoteBar
-                                    key={item}
-                                    number={item + 1}
-                                    ratingCount={ratings?.length}
-                                    ratingTotal={ratings?.filter(rating => rating.star === item + 1)?.length}
-                                />
-                            ))}
-                        </div>
+            </div>
+            <div className='w-main mt-5'>
+                <div className='flex'>
+                    <div className='flex-4 border-r border-gray-200 flex flex-col items-center justify-center'>
+                        <span className='text-2xl font-semibold text-gray-800'>{`${totalRatings}/5`}</span>
+                        <span className='flex gap-2 py-2'>{renderStar(totalRatings)?.map((item, index) => (
+                            <span key={index}>{item}</span>
+                        ))}
+                        </span>
+                        <span className='underline text-base'>{`${ratings?.length} reviews`}</span>
                     </div>
-                    <div className='p-4 flex justify-center items-center flex-col'>
-                        <span>How would you rate this product?</span>
-                        <Button handleOnClick={handleVoteNow}
-                        >
-                            Rate now!
-                        </Button>
+                    <div className='flex-6 flex flex-col p-4 gap-2'>
+                        {Array.from(Array(5).keys()).reverse().map(item => (
+                            <VoteBar
+                                key={item}
+                                number={item + 1}
+                                ratingCount={ratings?.length}
+                                ratingTotal={ratings?.filter(rating => rating.star === item + 1)?.length}
+                            />
+                        ))}
                     </div>
-                </div>}
+                </div>
+                <div className='p-4 flex justify-center items-center flex-col'>
+                    <span>How would you rate this product?</span>
+                    <Button handleOnClick={handleVoteNow}
+                    >
+                        Rate now!
+                    </Button>
+                </div>
+                <div>
+                    {ratings?.map(item => (
+                        <Comment
+                            key={item.id}
+                            star={item.star}
+                            updatedAt={item.updatedAt}
+                            comment={item.comment}
+                            name={`${item.postedBy?.lastname} ${item?.postedBy?.firstname}`}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     )

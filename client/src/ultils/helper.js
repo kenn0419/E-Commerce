@@ -8,7 +8,7 @@ export const formatMoney = (st) => st?.toLocaleString('it-IT', { style: 'currenc
 
 export const renderStar = (starNumbers, size) => {
     const stars = [];
-    console.log(starNumbers)
+    starNumbers = Math.round(starNumbers);
     for (let i = 0; i < starNumbers; i++) {
         console.log(i);
         stars.push(<FaStar key={`star ${i}`} color='orange' size={size || 16} />);

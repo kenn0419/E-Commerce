@@ -20,7 +20,13 @@ const createProduct = asyncHandler(async (req, res) => {
 
 const getProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params;
-    const product = await Product.findById(pid);
+    const product = await Product.findById(pid).populate({
+        path: 'ratings',
+        populate: {
+            path: 'postedBy',
+            select: 'firstname lastname avatar'
+        }
+    });
     return res.status(200).json({
         success: product ? true : false,
         productData: product,
@@ -114,7 +120,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
 const ratings = asyncHandler(async (req, res) => {
     const { _id } = req.user;
-    const { star, comment, pid } = req.body;
+    const { star, comment, pid, updatedAt } = req.body;
     if (!star || !pid) {
         throw new Error('Missing inputs');
     }
@@ -128,6 +134,7 @@ const ratings = asyncHandler(async (req, res) => {
             $set: {
                 "ratings.$.star": star,
                 "ratings.$.comment": comment,
+                "ratings.$.updatedAt": updatedAt,
             }
         }, { new: true })
     } else {
@@ -137,7 +144,8 @@ const ratings = asyncHandler(async (req, res) => {
                 ratings: {
                     star,
                     comment,
-                    postedBy: _id
+                    postedBy: _id,
+                    updatedAt
                 }
             }
         }, { new: true })
