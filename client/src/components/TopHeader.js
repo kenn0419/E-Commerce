@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react'
+import { memo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import path from '../ultils/path';
 import { getCurrent } from '../store/user/asyncAction';

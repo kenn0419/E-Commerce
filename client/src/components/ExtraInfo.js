@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import { memo } from 'react'
 
 const ExtraInfo = ({ iconImage, title, sub, id }) => {
     return (

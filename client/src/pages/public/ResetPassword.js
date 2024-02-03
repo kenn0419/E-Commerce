@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Button } from '../../components';
 import { useParams } from 'react-router-dom';
 import { apiResetPassword } from '../../apis';

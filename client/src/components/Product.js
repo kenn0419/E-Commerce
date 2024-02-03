@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import no_image from '../assets/no_image.png';
 import label from '../assets/new.png';
 import trending from '../assets/trending.png';

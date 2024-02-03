@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo } from 'react';
+import { useEffect, useState, memo } from 'react';
 import icons from '../ultils/icon';
 import { apiGetProducts } from '../apis/product';
 import no_image from '../assets/no_image.png';

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import icons from '../ultils/icon'
 import { colors } from '../ultils/contants';
 import { createSearchParams, useNavigate, useParams } from 'react-router-dom'

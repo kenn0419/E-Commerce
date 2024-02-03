@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from 'react'
+import { memo, useEffect, useRef } from 'react'
 import icons from '../ultils/icon'
 
 const VoteBar = ({ number, ratingCount, ratingTotal }) => {

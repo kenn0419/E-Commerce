@@ -4,6 +4,7 @@ import { IoBagSharp } from "react-icons/io5";
 import { FaStar } from "react-icons/fa6";
 import { TiThMenu } from "react-icons/ti";
 import { FiLogOut } from "react-icons/fi";
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
 
 const icons = {
@@ -25,6 +26,7 @@ const icons = {
     FaReply,
     FaTty,
     IoIosArrowDown,
+    HiOutlineDotsHorizontal,
 }
 
 export default icons

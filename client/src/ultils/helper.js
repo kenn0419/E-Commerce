@@ -10,7 +10,6 @@ export const renderStar = (starNumbers, size) => {
     const stars = [];
     starNumbers = Math.round(starNumbers);
     for (let i = 0; i < starNumbers; i++) {
-        console.log(i);
         stars.push(<FaStar key={`star ${i}`} color='orange' size={size || 16} />);
     }
     for (let j = 0; j < (5 - starNumbers); j++) {
@@ -62,4 +61,12 @@ export const validate = (payload, setInvalidFields) => {
         }
     }
     return invalidFields;
+}
+
+export const generateRange = (start, end) => {
+    const arr = [];
+    for (let i = start; i <= end; i++) {
+        arr.push(i);
+    }
+    return arr;
 }

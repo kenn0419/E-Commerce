@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { apiGetProduct, apiGetProducts } from '../../apis';
 import { Breadcrumbs, Button, CustomSlider, ExtraInfo, ProductInfo, SelectQuantity } from '../../components';

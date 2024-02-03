@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import logo from '../assets/logo.png'
 import { votReview } from '../ultils/contants';
 import icons from '../ultils/icon';

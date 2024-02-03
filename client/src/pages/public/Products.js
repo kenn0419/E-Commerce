@@ -1,6 +1,6 @@
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { Breadcrumbs, Product, SearchItem, SelectField } from '../../components';
+import { Breadcrumbs, Pagination, Product, SearchItem, SelectField } from '../../components';
 import { apiGetProducts } from '../../apis';
 import Masonry from 'react-masonry-css'
 import { sorts } from '../../ultils/contants';
@@ -126,6 +126,11 @@ const Products = () => {
                         />
                     ))}
                 </Masonry>
+            </div>
+            <div className='w-main mx-auto my-4 flex justify-end'>
+                <Pagination
+                    totalCount={99}
+                />
             </div>
         </div>
     )
