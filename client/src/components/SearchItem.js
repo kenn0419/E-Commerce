@@ -1,17 +1,17 @@
 import { memo, useEffect, useState } from 'react'
 import icons from '../ultils/icon'
 import { colors } from '../ultils/contants';
-import { createSearchParams, useNavigate, useParams } from 'react-router-dom'
+import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { apiGetProducts } from '../apis'
 import { formatMoney } from '../ultils/helper'
 import useDebounce from '../hooks/useDebounce'
-import { toast } from 'react-toastify';
 
 
 const SearchItem = ({ name, activeClick, handleChangeActiveFilter, type = 'checkbox' }) => {
     const { IoIosArrowDown } = icons;
     const navigate = useNavigate();
     const { category } = useParams();
+    const [params] = useSearchParams();
     const [selected, setSelected] = useState([]);
     const [highPrice, setHighPrice] = useState(0);
     const [price, setPrice] = useState({
@@ -34,42 +34,51 @@ const SearchItem = ({ name, activeClick, handleChangeActiveFilter, type = 'check
         }
     }
     useEffect(() => {
+        let param = [];
+        for (let i of params.entries()) param.push(i);
+        const queries = {};
+        for (let i of param) queries[i[0]] = i[1];
         if (selected.length > 0) {
-            navigate({
-                pathname: `/${category}`,
-                search: createSearchParams({
-                    color: selected.join(',')
-                }).toString(),
-            })
+            queries.color = selected.join(',');
+            queries.page = 1;
         } else {
-            navigate(`/${category}`)
+            delete queries.color;
         }
+        console.log(queries);
+        navigate({
+            pathname: `/${category}`,
+            search: createSearchParams(queries).toString(),
+        })
     }, [selected])
     useEffect(() => {
         if (type === 'input') {
             fetchHighestPriceProducts();
         }
     }, [type])
+    const debounceFrom = useDebounce(price.from, 1000);
+    const debounceTo = useDebounce(price.to, 1000);
     useEffect(() => {
-        if (Number(price.from) > Number(price.to)) {
-            toast.error('Price is invalid!!!');
-        }
-    }, [price])
-    const debounceFrom = useDebounce(price.from, 500);
-    const debounceTo = useDebounce(price.to, 500);
-    useEffect(() => {
-        const data = {};
+        let param = [];
+        for (let i of params.entries()) param.push(i);
+        const queries = {};
+        for (let i of param) queries[i[0]] = i[1];
         if (Number(price.from) > 0) {
-            data.from = price.from;
-        }
+            queries.from = price.from;
+        } else delete queries.from;
         if (Number(price.to) > 0) {
-            data.to = price.to;
-        }
+            queries.to = price.to;
+        } else delete queries.to;
+        queries.page = 1;
         navigate({
             pathname: `/${category}`,
-            search: createSearchParams(data).toString(),
+            search: createSearchParams(queries).toString(),
         })
     }, [debounceFrom, debounceTo])
+    // useEffect(() => {
+    //     if (price.from && price.to && Number(price.from) > Number(price.to)) {
+    //         toast.error('Price is invalid!!!');
+    //     }
+    // }, [price])
     return (
         <div
             className='relative p-4 text-xs text-[#505050] border border-gray-800 flex justify-between items-center gap-4 cursor-pointer'
@@ -82,7 +91,7 @@ const SearchItem = ({ name, activeClick, handleChangeActiveFilter, type = 'check
                     {type === 'checkbox' && <div onClick={e => e.stopPropagation()}>
                         <div className='border-b border-gray-300'>
                             <div className='p-4 flex items-center justify-between gap-14'>
-                                <span className='whitespace-nowrap'>{`${selected.length} selected`}</span>
+                                <span className='whitespace-nowrap'>{`${selected?.length} selected`}</span>
                                 <span
                                     className='underline cursor-pointer'
                                     onClick={(e) => {
@@ -118,7 +127,7 @@ const SearchItem = ({ name, activeClick, handleChangeActiveFilter, type = 'check
                                     className='underline cursor-pointer'
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        setPrice(prev => ({ ...prev, from: '', to: '' }));
+                                        setPrice({ from: '', to: '' });
                                         handleChangeActiveFilter();
                                     }}
                                 >

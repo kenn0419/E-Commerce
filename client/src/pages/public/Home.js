@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
-import icons from '../../ultils/icon';
-import { Sidebar, Baner, BestSeller, DealDaily, FeartureProduct, CustomSlider } from '../../components';
+import icons from 'ultils/icon';
+import { Sidebar, Baner, BestSeller, DealDaily, FeartureProduct, CustomSlider } from 'components';
 
 const Home = () => {
     const { MdOutlineKeyboardArrowRight } = icons;

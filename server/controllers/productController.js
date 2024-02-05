@@ -87,11 +87,15 @@ const getProducts = asyncHandler(async (req, res) => {
     queryCommand = queryCommand.skip(skip).limit(limit);
 
     //Excecute query
-    const products = await queryCommand;
-    return res.status(200).json({
-        success: products ? true : false,
-        counts: products.length,
-        products: products,
+    queryCommand.then(async (response) => {
+        const counts = await Product.find(q).countDocuments();
+        return res.json({
+            success: response ? true : false,
+            counts,
+            products: response ? response : 'Can not get products'
+        })
+    }).catch((err) => {
+        throw new Error(err.message);
     })
 })
 

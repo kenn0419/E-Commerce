@@ -1,9 +1,9 @@
 import { memo, useCallback, useEffect, useState } from 'react'
 import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { Breadcrumbs, Pagination, Product, SearchItem, SelectField } from '../../components';
-import { apiGetProducts } from '../../apis';
+import { Breadcrumbs, Pagination, Product, SearchItem, SelectField } from 'components';
+import { apiGetProducts } from 'apis';
 import Masonry from 'react-masonry-css'
-import { sorts } from '../../ultils/contants';
+import { sorts } from 'ultils/contants';
 
 const breakpointColumnsObj = {
     default: 4,
@@ -22,7 +22,7 @@ const Products = () => {
     const fetchApiProductsByCategory = async (queries) => {
         const response = await apiGetProducts(queries);
         if (response.success) {
-            setProducts(response.products);
+            setProducts(response);
         }
     }
     const handleChangeActiveFilter = useCallback((name) => {
@@ -47,21 +47,24 @@ const Products = () => {
         let priceQuery = {};
         if (queries.from && queries.to) {
             priceQuery = {
-                '$and': [
+                $and: [
                     { price: { gte: queries.from } },
                     { price: { lte: queries.to } },
                 ]
             }
-        }
-        if (queries.from) {
-            queries.price = { gte: queries.from };
-        }
-        if (queries.to) {
-            queries.price = { lte: queries.to };
+            // delete queries.price;
+        } else {
+            if (queries.from) {
+                queries.price = { gte: queries.from };
+            }
+            if (queries.to) {
+                queries.price = { lte: queries.to };
+            }
         }
         delete queries.from;
         delete queries.to;
         fetchApiProductsByCategory({ ...priceQuery, ...queries });
+        window.scrollTo(0, 0);
     }, [params])
     useEffect(() => {
         if (sort) {
@@ -117,7 +120,7 @@ const Products = () => {
                     className="my-masonry-grid flex mx-[-10px]"
                     columnClassName="my-masonry-grid_column"
                 >
-                    {products?.map(product => (
+                    {products?.products?.map(product => (
                         <Product
                             pid={product.id}
                             key={product._id}
@@ -127,11 +130,12 @@ const Products = () => {
                     ))}
                 </Masonry>
             </div>
-            <div className='w-main mx-auto my-4 flex justify-end'>
+            {products?.products?.length > 0 && <div className='w-main mx-auto my-4 flex justify-end'>
                 <Pagination
-                    totalCount={99}
+                    totalCount={products.counts}
                 />
-            </div>
+            </div>}
+
         </div>
     )
 }

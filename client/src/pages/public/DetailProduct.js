@@ -1,11 +1,11 @@
 import { memo, useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { apiGetProduct, apiGetProducts } from '../../apis';
-import { Breadcrumbs, Button, CustomSlider, ExtraInfo, ProductInfo, SelectQuantity } from '../../components';
+import { apiGetProduct, apiGetProducts } from 'apis';
+import { Breadcrumbs, Button, CustomSlider, ExtraInfo, ProductInfo, SelectQuantity } from 'components';
 import Slider from 'react-slick';
 import ReactImageMagnify from 'react-image-magnify';
-import { formatMoney, renderStar } from '../../ultils/helper';
-import { extraInfo } from '../../ultils/contants';
+import { formatMoney, renderStar } from 'ultils/helper';
+import { extraInfo } from 'ultils/contants';
 
 const settings = {
     dots: true,
