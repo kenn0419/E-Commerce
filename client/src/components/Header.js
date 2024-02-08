@@ -3,7 +3,9 @@ import logo from '../assets/logo.png';
 import icons from '../ultils/icon';
 import { Link } from 'react-router-dom';
 import path from '../ultils/path';
+import { useSelector } from 'react-redux';
 const Header = () => {
+    const { current, isLoggedIn } = useSelector(state => state.user);
     const { FaPhoneAlt, MdEmail, FaUser, IoBagSharp } = icons;
     return (
         <div className='w-main h-[110px] py-[35px] flex justify-between'>
@@ -25,14 +27,19 @@ const Header = () => {
                     </span>
                     <span className='font-light'>Online Support 24/7</span>
                 </div>
-                <div className='flex items-center gap-2 justify-center px-5 border-r cursor-pointer'>
-                    <IoBagSharp color='red' size={18} />
-                    <span>0 item</span>
-                </div>
-                <div className='flex justify-center items-center px-5 gap-1 hover:underline cursor-pointer'>
-                    <FaUser size={18} />
-                    <span>Profile</span>
-                </div>
+                {current && isLoggedIn && <>
+                    <div className='flex items-center gap-2 justify-center px-5 border-r cursor-pointer'>
+                        <IoBagSharp color='red' size={18} />
+                        <span>0 item</span>
+                    </div>
+                    <Link
+                        className='flex justify-center items-center px-5 gap-1 hover:underline cursor-pointer'
+                        to={+current?.role === 0 ? `/${path.ADMIN}/${path.DASHBOARD}` : `/${path.MEMBER}/${path.PERSONAL}`}
+                    >
+                        <FaUser size={18} />
+                        <span>Profile</span>
+                    </Link>
+                </>}
             </div>
         </div>
     )

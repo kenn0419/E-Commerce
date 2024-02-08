@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { InputField, Button } from 'components'
+import { InputField, Button, Loading } from 'components'
 import { apiFinalRegister, apiForgotPassword, apiLogin, apiRegister } from 'apis';
 import Swal from 'sweetalert2'
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { login } from 'store/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { validate } from 'ultils/helper';
+import { showModal } from 'store/app/appSlice';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -43,7 +44,9 @@ const Login = () => {
         const inValids = isRegister ? validate(payload, setInvalidFields) : validate(data, setInvalidFields);
         if (inValids === 0) {
             if (isRegister) {
+                dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
                 const response = await apiRegister(payload);
+                dispatch(showModal({ isShowModal: false, modalChildren: null }))
                 if (response.success) {
                     setIsVerifyEmail(true);
                     // Swal.fire('Congratulations', response.message, 'success').then(() => {
@@ -56,7 +59,7 @@ const Login = () => {
             } else {
                 const response = await apiLogin(data);
                 if (response.success) {
-                    dispatch(login({ isLoggedIn: true, token: response.accessToken, userData: response.userData }));
+                    dispatch(login({ isLoggedIn: true, token: response.accessToken, current: response.userData }));
                     navigate(`/${path.HOME}`);
                     resetPayload();
                 } else {
@@ -100,14 +103,12 @@ const Login = () => {
                         />
                         <div className='flex justify-between items-center'>
                             <Button
-                                name='Back'
                                 handleOnClick={() => setIsVerifyEmail(false)}
                                 style={`px-4 py-2 round-md text-white bg-gray-500 font-semibold rounded-md my-2`}
-                            />
-                            <Button
-                                name='Submit'
-                                handleOnClick={handleFinalRegister}
-                            />
+                            >
+                                Back
+                            </Button>
+                            <Button handleOnClick={handleFinalRegister}>Submit</Button>
                         </div>
                     </div>
                 </div>

@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Login, Home, Public, Blog, DetailProduct, Service, Products, FAQ, FinalRegister, ResetPassword } from './pages/public';
-import path from './ultils/path';
-import { getCategory } from './store/app/asyncAction';
+import { Login, Home, Public, Blog, DetailProduct, Service, Products, FAQ, FinalRegister, ResetPassword } from 'pages/public';
+import path from 'ultils/path';
+import { getCategory } from 'store/app/asyncAction';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Modal } from './components';
+import { Modal } from 'components';
+import { AdminLayout, CreateProduct, Dashboard, ManageOder, ManageProduct, ManageUser } from 'pages/admin';
+import { MemberLayout, Personal } from 'pages/member';
 
 function App() {
   const dispatch = useDispatch();
@@ -18,7 +20,6 @@ function App() {
     <div className="font-main relative">
       {isShowModal && <Modal>{modalChildren}</Modal>}
       <Routes>
-        <Route path={path.LOGIN} element={<Login />} />
         <Route path={path.PUBLIC} element={<Public />}>
           <Route path={path.HOME} element={<Home />} />
           <Route path={path.BLOG} element={<Blog />} />
@@ -26,9 +27,21 @@ function App() {
           <Route path={path.OUR_SERVICES} element={<Service />} />
           <Route path={path.FAQ} element={<FAQ />} />
           <Route path={path.PRODUCTS} element={<Products />} />
+          <Route path={path.ALL} element={<Home />} />
+        </Route>
+        <Route path={path.ADMIN} element={<AdminLayout />}>
+          <Route path={path.DASHBOARD} element={<Dashboard />} />
+          <Route path={path.MANAGE_ORDERS} element={<ManageOder />} />
+          <Route path={path.MANAGE_PRODUCTS} element={<ManageProduct />} />
+          <Route path={path.MANAGE_USER} element={<ManageUser />} />
+          <Route path={path.CREATE_PRODUCTS} element={<CreateProduct />} />
+        </Route>
+        <Route path={path.MEMBER} element={<MemberLayout />}>
+          <Route path={path.PERSONAL} element={<Personal />} />
         </Route>
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />
         <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
+        <Route path={path.LOGIN} element={<Login />} />
       </Routes>
       <ToastContainer
         position="top-right"
@@ -42,7 +55,7 @@ function App() {
         pauseOnHover
         theme="colored"
       />
-    </div>
+    </div >
 
   );
 }
