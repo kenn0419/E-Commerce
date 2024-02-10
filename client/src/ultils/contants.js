@@ -182,3 +182,43 @@ export const votReview = [
         text: 'Perfect'
     },
 ]
+
+export const adminSidebar = [
+    {
+        id: 1,
+        type: 'SINGLE',
+        text: 'Dashboard',
+        path: `/${path.ADMIN}/${path.DASHBOARD}`,
+        icon: icons.MdDashboard
+    },
+    {
+        id: 2,
+        type: 'SINGLE',
+        text: 'Manage User',
+        path: `/${path.ADMIN}/${path.MANAGE_USER}`,
+        icon: icons.MdGroup
+    },
+    {
+        id: 3,
+        type: 'PARENT',
+        text: 'Manage Products',
+        icon: icons.FaProductHunt,
+        subMenu: [
+            {
+                text: 'Create Product',
+                path: `/${path.ADMIN}/${path.CREATE_PRODUCTS}`
+            },
+            {
+                text: 'Manage Products',
+                path: `/${path.ADMIN}/${path.MANAGE_PRODUCTS}`
+            }
+        ]
+    },
+    {
+        id: 4,
+        type: 'SINGLE',
+        text: 'Manage Orders',
+        path: `/${path.ADMIN}/${path.MANAGE_ORDERS}`,
+        icon: icons.MdOutlineProductionQuantityLimits
+    },
+]

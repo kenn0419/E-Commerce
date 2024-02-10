@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
-import { ProductCard } from './'
-import { apiGetProducts } from '../apis'
+import { memo, useEffect, useState } from 'react'
+import { ProductCard } from 'components'
+import { apiGetProducts } from 'apis'
 
 const FeartureProduct = () => {
     const [products, setProducts] = useState();
@@ -44,4 +44,4 @@ const FeartureProduct = () => {
     )
 }
 
-export default FeartureProduct
+export default memo(FeartureProduct);

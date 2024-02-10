@@ -1,14 +1,12 @@
-import { useState } from 'react';
-import no_image from '../assets/no_image.png';
-import label from '../assets/new.png';
-import trending from '../assets/trending.png';
-import { formatMoney } from '../ultils/helper';
-import { renderStar } from '../ultils/helper';
-import { SelectOption } from '.';
-import icons from '../ultils/icon';
+import { memo, useState } from 'react';
+import no_image from 'assets/no_image.png';
+import label from 'assets/new.png';
+import trending from 'assets/trending.png';
+import { formatMoney } from 'ultils/helper';
+import { renderStar } from 'ultils/helper';
+import { SelectOption } from '..';
+import icons from 'ultils/icon';
 import { Link } from 'react-router-dom';
-import path from '../ultils/path';
-
 
 const Product = ({ productData, isNew, pid, normal }) => {
     const { FaHeart, FaEye, TiThMenu } = icons;
@@ -46,4 +44,4 @@ const Product = ({ productData, isNew, pid, normal }) => {
     )
 }
 
-export default Product
+export default memo(Product)

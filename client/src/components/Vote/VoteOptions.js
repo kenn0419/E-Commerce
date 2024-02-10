@@ -1,8 +1,8 @@
 import { memo, useEffect, useRef, useState } from 'react'
-import logo from '../assets/logo.png'
-import { votReview } from '../ultils/contants';
-import icons from '../ultils/icon';
-import Button from './Button';
+import logo from 'assets/logo.png'
+import { votReview } from 'ultils/contants';
+import icons from 'ultils/icon';
+import { Button } from 'components';
 
 const VoteOptions = ({ nameProduct, handleSubmitVote }) => {
     const modalRef = useRef();

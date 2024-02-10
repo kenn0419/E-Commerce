@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
-import { createSlug } from '../ultils/helper';
+import { createSlug } from 'ultils/helper';
 import { useSelector } from 'react-redux'
+import { memo } from 'react';
 
 const Sidebar = () => {
     const { categories } = useSelector(state => state.app);
@@ -23,4 +24,4 @@ const Sidebar = () => {
     )
 }
 
-export default Sidebar
+export default memo(Sidebar)

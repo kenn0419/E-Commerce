@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { memo } from 'react'
 
-const selectOption = ({ icon }) => {
+const SelectOption = ({ icon }) => {
     return (
         <div
             className='
@@ -13,4 +13,4 @@ const selectOption = ({ icon }) => {
     )
 }
 
-export default selectOption
+export default memo(SelectOption)

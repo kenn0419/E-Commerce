@@ -1,8 +1,8 @@
-import React from 'react';
-import logo from '../assets/logo.png';
-import icons from '../ultils/icon';
+import React, { memo } from 'react';
+import logo from 'assets/logo.png';
+import icons from 'ultils/icon';
 import { Link } from 'react-router-dom';
-import path from '../ultils/path';
+import path from 'ultils/path';
 import { useSelector } from 'react-redux';
 const Header = () => {
     const { current, isLoggedIn } = useSelector(state => state.user);
@@ -45,4 +45,4 @@ const Header = () => {
     )
 }
 
-export default Header
+export default memo(Header);

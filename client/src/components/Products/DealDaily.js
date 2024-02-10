@@ -1,9 +1,9 @@
 import { useEffect, useState, memo } from 'react';
-import icons from '../ultils/icon';
-import { apiGetProducts } from '../apis/product';
-import no_image from '../assets/no_image.png';
-import { formatMoney, renderStar, secondsToHms } from '../ultils/helper'
-import { CountDown } from './';
+import icons from 'ultils/icon';
+import { apiGetProducts } from 'apis/product';
+import no_image from 'assets/no_image.png';
+import { formatMoney, renderStar, secondsToHms } from 'ultils/helper'
+import { CountDown } from 'components';
 import moment from 'moment';
 
 let idInteval;

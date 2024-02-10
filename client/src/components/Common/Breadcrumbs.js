@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { Link } from 'react-router-dom';
 import useBreadcrumbs from "use-react-router-breadcrumbs";
-import icons from '../ultils/icon';
+import icons from 'ultils/icon';
 
 const Breadcrumbs = ({ title, category }) => {
     const { MdOutlineKeyboardArrowRight } = icons;

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 
 const Baner = () => {
     return (
@@ -12,4 +12,4 @@ const Baner = () => {
     )
 }
 
-export default Baner
+export default memo(Baner)

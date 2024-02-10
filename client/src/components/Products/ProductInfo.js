@@ -1,14 +1,14 @@
-import { memo, useCallback, useState } from 'react'
-import { productTabs } from '../ultils/contants'
-import { Button, Comment, VoteBar, VoteOptions } from './';
-import { renderStar } from '../ultils/helper';
+import { memo, useState } from 'react'
+import { productTabs } from 'ultils/contants'
+import { Button, Comment, VoteBar, VoteOptions } from 'components'
+import { renderStar } from 'ultils/helper';
 import { useDispatch, useSelector } from 'react-redux';
-import { showModal } from '../store/app/appSlice';
-import { apiRatings } from '../apis';
+import { showModal } from 'store/app/appSlice';
+import { apiRatings } from 'apis';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
-import path from '../ultils/path';
+import path from 'ultils/path';
 
 
 const ProductInfo = ({ totalRatings, ratings, nameProduct, pid, reRender }) => {

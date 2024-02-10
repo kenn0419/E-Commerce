@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef } from 'react'
-import icons from '../ultils/icon'
+import icons from 'ultils/icon'
 
 const VoteBar = ({ number, ratingCount, ratingTotal }) => {
     const { FaStar } = icons;
