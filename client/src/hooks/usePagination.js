@@ -5,7 +5,7 @@ import icons from '../ultils/icon';
 const usePagination = (totalProductCount, currentPage, siblingCount = 1) => {
     const { HiOutlineDotsHorizontal } = icons;
     const paginationArray = useMemo(() => {
-        const pagesize = process.env.REACT_APP_PRODUCT_LIMIT || 10;
+        const pagesize = process.env.REACT_APP_LIMIT || 10;
         const paginationCount = Math.ceil(totalProductCount / pagesize);
         const totalPaginationItem = siblingCount + 5;
         if (paginationCount <= totalPaginationItem) {

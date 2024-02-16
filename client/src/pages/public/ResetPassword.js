@@ -1,16 +1,21 @@
 import { useState } from 'react'
 import { Button } from 'components';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { apiResetPassword } from 'apis';
 import { toast } from 'react-toastify';
+import path from 'ultils/path';
 
 const ResetPassword = () => {
-    const [password, setPassword] = useState('');
     const { token } = useParams();
+    const navigate = useNavigate();
+    const [password, setPassword] = useState('');
     const handleResetPassword = async () => {
         const response = await apiResetPassword({ password, token });
         if (response.success) {
             toast.success(response.message);
+            setTimeout(() => {
+                navigate(`/${path.LOGIN}`);
+            }, 1000);
         } else {
             toast.error(response.message);
         }
@@ -30,11 +35,16 @@ const ResetPassword = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        <div className='flex justify-end items-center'>
+                        <div className='flex justify-between items-center'>
                             <Button
-                                name='Submit'
+                                style={`p-2 round-md text-white font-semibold rounded-md my-2 bg-gray-500`}
+                                handleOnClick={() => navigate(`/${path.HOME}`)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
                                 handleOnClick={handleResetPassword}
-                            />
+                            >Submit</Button>
                         </div>
                     </div>
                 </div>

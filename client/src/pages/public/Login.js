@@ -128,14 +128,12 @@ const Login = () => {
                             />
                             <div className='flex justify-between items-center'>
                                 <Button
-                                    name='Back'
                                     handleOnClick={() => setIsForgotPassword(false)}
                                     style={`px-4 py-2 round-md text-white bg-gray-500 font-semibold rounded-md my-2`}
-                                />
+                                >Back</Button>
                                 <Button
-                                    name='Submit'
                                     handleOnClick={handleForgotPassword}
-                                />
+                                >Submit</Button>
                             </div>
                         </div>
                     </div>
