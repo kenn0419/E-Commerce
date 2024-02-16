@@ -177,10 +177,54 @@ const resetPassword = asyncHandler(async (req, res) => {
 })
 
 const getUsers = asyncHandler(async (req, res) => {
-    const response = await User.find().select('-refreshToken -password -role');
-    return res.status(200).json({
-        success: response ? true : false,
-        users: response
+    const queries = { ...req.query };
+
+    //Tách các trường hợp ra khỏi query
+    const excludeFields = ['limit', 'sort', 'page', 'fields'];
+    excludeFields.forEach(item => delete queries[item]);
+
+    //Format các operators cho đúng cú pháp mongoose
+    let queryString = JSON.stringify(queries);
+    queryString = queryString.replace(/\b(gte|gt|lt|lte)\b/g, item => `$${item}`)
+    const formatedQuery = JSON.parse(queryString);
+
+    //Filtering
+    if (queries?.name) {
+        formatedQuery.name = {
+            $regex: queries.name,
+            $options: 'i'
+        }
+    }
+    let queryCommand = User.find(formatedQuery);
+
+    //Sorting
+    if (req.query.sort) {
+        const sortBy = req.query.sort.split(',').join(' ');
+        queryCommand = queryCommand.sort(sortBy);
+    }
+
+    //Fields limiting
+    if (req.query.fields) {
+        const fields = req.query.fields.split(',').join(' ');
+        queryCommand = queryCommand.select(fields);
+    }
+
+    //Pagination
+    const page = +req.query.page || 1;
+    const limit = +req.query.limit || process.env.LIMIT_USERS;
+    const skip = (page - 1) * limit;
+    queryCommand = queryCommand.skip(skip).limit(limit);
+
+    //Excecute query
+    queryCommand.then(async (response) => {
+        const counts = await User.find(formatedQuery).countDocuments();
+        return res.json({
+            success: response ? true : false,
+            counts,
+            users: response ? response : 'Can not get users'
+        })
+    }).catch((err) => {
+        throw new Error(err.message);
     })
 })
 
