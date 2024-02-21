@@ -11,7 +11,7 @@ router.get('/current', verifyAccessToken, userController.getCurrent);
 router.post('/forget-password', userController.forgetPassword);
 router.put('/reset-password', userController.resetPassword);
 router.get('/', [verifyAccessToken, isAdmin], userController.getUsers);
-router.delete('/', [verifyAccessToken, isAdmin], userController.deleteUser);
+router.delete('/:uid', [verifyAccessToken, isAdmin], userController.deleteUser);
 router.put('/current', [verifyAccessToken], userController.updateUser);
 router.put('/add-cart', [verifyAccessToken], userController.addIntoCart);
 router.put('/update-address', [verifyAccessToken], userController.updateAddressUser);

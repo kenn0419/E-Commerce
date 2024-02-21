@@ -246,11 +246,8 @@ const getUsers = asyncHandler(async (req, res) => {
 })
 
 const deleteUser = asyncHandler(async (req, res) => {
-    const { _id } = req.query;
-    if (!_id) {
-        throw new Error('Missing inputs');
-    }
-    const response = await User.findByIdAndDelete(_id);
+    const { uid } = req.params;
+    const response = await User.findByIdAndDelete(uid);
     return res.status(200).json({
         success: response ? true : false,
         message: response ? 'Delete user successfully' : 'Something went wrong'
@@ -277,8 +274,8 @@ const updateUserByAdmin = asyncHandler(async (req, res) => {
     }
     const user = await User.findByIdAndUpdate(uid, req.body, { new: true }).select('-password -role -refreshToken');
     return res.status(200).json({
-        success: response ? true : false,
-        message: response ? 'Update user successfully' : 'Something went wrong',
+        success: user ? true : false,
+        message: user ? 'Update user successfully' : 'Something went wrong',
         updatedUser: user ? user : ''
     })
 })
