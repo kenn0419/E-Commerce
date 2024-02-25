@@ -8,16 +8,16 @@ import { useForm } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
-import { roles } from 'ultils/contants';
+import { roles, blockStatus } from 'ultils/contants';
 
 const ManageUser = () => {
-    const { handleSubmit, register, formState: { errors } } = useForm({
+    const { handleSubmit, register, formState: { errors }, reset } = useForm({
         email: '',
         firstname: '',
         lastname: '',
         role: '',
         mobile: '',
-        status: '',
+        isBlocked: '',
     });
     const [params] = useSearchParams();
     const [users, setUsers] = useState();
@@ -68,8 +68,9 @@ const ManageUser = () => {
             }
         })
     }
+
     return (
-        <div className='w-full pl-8'>
+        <div className={clsx('w-full', editItem && 'pl-16')}>
             <h1 className='h-[75px] flex justify-between items-center text-3xl font-semibold px-4 border-b border-gray-400'>
                 <span>Manage Users</span>
             </h1>
@@ -154,7 +155,15 @@ const ManageUser = () => {
                                     </td>
                                     <td className='py-2 px-2'>
                                         {editItem?._id === user._id ?
-                                            <SelectForm />
+                                            <SelectForm
+                                                fullWidth
+                                                register={register}
+                                                errors={errors}
+                                                defaultValue={user.role}
+                                                id='role'
+                                                validate={{ required: 'Please fill this field' }}
+                                                options={roles}
+                                            />
                                             :
                                             <span>
                                                 {roles.find(item => item.code === +user.role)?.value}
@@ -182,7 +191,20 @@ const ManageUser = () => {
                                         }
                                     </td>
                                     <td className='py-2 px-2'>
-                                        {editItem?._id === user._id ? <SelectForm /> : <span>{!user.isBlocked ? 'Active' : 'Blocked'}</span>}
+                                        {editItem?._id === user._id ?
+                                            <SelectForm
+                                                fullWidth
+                                                register={register}
+                                                errors={errors}
+                                                defaultValue={user.isBlocked}
+                                                id='isBlocked'
+                                                validate={{ required: 'Please fill this field' }}
+                                                options={blockStatus}
+                                            />
+                                            :
+                                            <span>
+                                                {!user.isBlocked ? 'Active' : 'Blocked'}
+                                            </span>}
                                     </td>
                                     <td className='py-2 px-2'>{moment(user.createdAt).format('DD/MM/YYYY')}</td>
                                     <td className='py-2 px-2 flex items-center gap-3 justify-center'>
@@ -193,7 +215,17 @@ const ManageUser = () => {
                                             Back
                                         </span> : <span
                                             className='cursor-pointer text-yellow-600 hover:underline'
-                                            onClick={() => setEditItem(user)}
+                                            onClick={() => {
+                                                reset({
+                                                    email: editItem?.email,
+                                                    firstname: editItem?.firstname,
+                                                    lastname: editItem?.lastname,
+                                                    role: editItem?.role,
+                                                    mobile: editItem?.mobile,
+                                                    isBlocked: editItem?.isBlocked,
+                                                })
+                                                setEditItem(user);
+                                            }}
                                         >
                                             Edit
                                         </span>}

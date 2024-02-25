@@ -11,7 +11,7 @@ const InputForm = ({ label, disabled, register, errors, id, validate, type = 'te
                 {...register(id, validate)}
                 disabled={disabled}
                 placeholder={placeholder}
-                className={clsx('bg-white px-2 py-2 text-sm rounded-lg outline-none border-gray-600', fullWidth && 'w-full')}
+                className={clsx('bg-white px-2 py-2 text-sm rounded-lg outline-none border-gray-600 my-auto', fullWidth && 'w-full')}
                 defaultValue={defaultValue}
             />
             {errors[id] && <small className='text-xs text-red-600 italic'>{errors[id].message}</small>}
