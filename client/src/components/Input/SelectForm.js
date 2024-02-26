@@ -3,16 +3,16 @@ import React, { memo } from 'react'
 
 const SelectForm = ({ label, options = [], register, errors, id, validate, style, fullWidth, defaultValue }) => {
     return (
-        <div className='flex flex-col gap-1'>
+        <div className={clsx('flex flex-col gap-1', style)}>
             {label && <label htmlFor={id}>{label}</label>}
             <select
                 id={id}
                 {...register(id, validate)}
                 defaultValue={defaultValue}
-                className={clsx('py-2 px-2 rounded-lg', fullWidth && 'w-full', style)}
+                className={clsx('py-2 px-2 rounded-lg outline-none', fullWidth && 'w-full')}
             >
                 <option value=''>---Choose---</option>
-                {options.map(item => (
+                {options?.map(item => (
                     <option key={item.value} value={item.code}>{item.value}</option>
                 ))}
             </select>
