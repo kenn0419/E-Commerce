@@ -30,4 +30,5 @@ export { default as Loading } from './Common/Loading';
 export { default as AdminSidebar } from './Sidebar/AdminSidebar';
 export { default as InputForm } from './Input/InputForm';
 export { default as SelectForm } from './Input/SelectForm';
+export { default as MarkDownEditor } from './Input/MarkDownEditor';
 

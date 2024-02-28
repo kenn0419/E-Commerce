@@ -1,15 +1,30 @@
-import { Button, InputForm, SelectForm, } from 'components';
-import React from 'react'
+import { Button, InputForm, MarkDownEditor, SelectForm, } from 'components';
+import React, { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSelector } from 'react-redux';
+import { validate } from 'ultils/helper';
 
 const CreateProduct = () => {
     const { register, handleSubmit, formState: { errors }, reset, watch } = useForm();
     const { categories } = useSelector(state => state.app);
+    const [payload, setPayload] = useState({
+        description: ''
+    })
+    const [inValidFields, setInValidFields] = useState([]);
+    const changeValue = useCallback((value) => {
+        setPayload(value);
+    }, [payload])
     const handleCreateProduct = (data) => {
-        if (data?.brand) data.brand = categories.find(item => item._id === data.category)?.brand.find((item, index) => index === +data.brand);
-        if (data?.category) data.category = categories.find(item => item._id === data.category)?.title;
-        console.log(data);
+        const invalids = validate(payload, setInValidFields);
+        if (invalids === 0) {
+            if (data?.brand) data.brand = categories.find(item => item._id === data.category)?.brand.find((item, index) => index === +data.brand);
+            if (data?.category) data.category = categories.find(item => item._id === data.category)?.title;
+            const finalPayload = { ...data, ...payload };
+            const formData = new FormData();
+            for (let i of Object.entries(finalPayload)) {
+                formData.append(i[0], i[1]);
+            }
+        }
     }
     return (
         <div className='w-full'>
@@ -92,8 +107,35 @@ const CreateProduct = () => {
                             options={categories?.find(category => category._id === watch('category'))?.brand?.map((item, index) => ({ code: index, value: item }))}
                         />
                     </div>
-                    <div className='flex justify-end'>
-                        <Button type='submit'>Create</Button>
+                    <MarkDownEditor
+                        name='description'
+                        label='Description'
+                        changeValue={changeValue}
+                        inValidFields={inValidFields}
+                        setInvalidFields={setInValidFields}
+                    />
+                    <div className='mt-4 flex flex-col gap-2'>
+                        <label htmlFor='thumb' className='text-base font-semibold'>Upload thumb</label>
+                        <input
+                            type='file'
+                            id='thumb'
+                            {...register('thumb', { required: 'Require choose file' })}
+                        />
+                        {errors['thumb'] && <small className='text-xs text-red-600 italic'>{errors['thumb'].message}</small>}
+
+                    </div>
+                    <div className='mt-4 flex flex-col gap-2'>
+                        <label htmlFor='images' className='text-base font-semibold'>Upload images of product</label>
+                        <input
+                            type='file'
+                            id='images'
+                            multiple
+                            {...register('images', { required: 'Require choose file' })}
+                        />
+                        {errors['images'] && <small className='text-xs text-red-600 italic'>{errors['images'].message}</small>}
+                    </div>
+                    <div className='flex justify-end mt-4'>
+                        <Button type='submit'>Create New Products</Button>
                     </div>
                 </form>
             </div>
