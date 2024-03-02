@@ -1,3 +1,4 @@
+import { apiCreateProduct } from 'apis';
 import { Button, InputForm, MarkDownEditor, SelectForm, } from 'components';
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -22,7 +23,7 @@ const CreateProduct = () => {
     const changeValue = useCallback((value) => {
         setPayload(value);
     }, [payload])
-    const handleCreateProduct = (data) => {
+    const handleCreateProduct = async (data) => {
         const invalids = validate(payload, setInValidFields);
         if (invalids === 0) {
             if (data?.brand) data.brand = categories.find(item => item._id === data.category)?.brand.find((item, index) => index === +data.brand);
@@ -32,6 +33,14 @@ const CreateProduct = () => {
             for (let i of Object.entries(finalPayload)) {
                 formData.append(i[0], i[1]);
             }
+            if (finalPayload.thumb) {
+                formData.append('thumb', finalPayload.thumb[0])
+            }
+            if (finalPayload.images) {
+                for (let i of finalPayload.images) formData.append('images', i);
+            }
+            const response = await apiCreateProduct(formData);
+            console.log(response);
         }
     }
     const handlePreviewThumb = async (file) => {
@@ -46,7 +55,6 @@ const CreateProduct = () => {
         handlePreviewThumb(watch('thumb')[0]);
     }, [watch('thumb')])
     const handlePreviewImages = async (files) => {
-        console.log(files);
         const imagesPreview = [];
         for (let file of files) {
             if (file?.type !== 'image/png' && file?.type !== 'image/jpeg' && file) {
@@ -188,9 +196,9 @@ const CreateProduct = () => {
                                 className='w-fit h-fit relative'
                                 onMouseEnter={() => setHoverElement(image.name)}
                                 onMouseLeave={() => setHoverElement()}
+                                key={index}
                             >
                                 <img
-                                    key={index}
                                     src={image.path}
                                     alt='product'
                                     className='w-[200px] object-contain cursor-pointer'

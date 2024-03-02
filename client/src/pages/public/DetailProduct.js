@@ -6,6 +6,7 @@ import Slider from 'react-slick';
 import ReactImageMagnify from 'react-image-magnify';
 import { formatMoney, renderStar } from 'ultils/helper';
 import { extraInfo } from 'ultils/contants';
+import DOMPurify from 'dompurify';
 
 const settings = {
     dots: true,
@@ -119,9 +120,10 @@ const DetailProduct = () => {
                     </div>
                     <div className='mt-5'>
                         <ul className='px-5'>
-                            {product.description?.map(item => (
-                                <li key={item} className='list-square leading-6 text-[#6b6b6b] text-sm '>{item}</li>
+                            {product.description.length > 1 && product.description?.map(item => (
+                                <li key={item} className='list-square leading-6 text-[#6b6b6b] text-sm'>{item}</li>
                             ))}
+                            {product.description.length === 1 && <li className='list-square leading-6 text-[#6b6b6b] text-sm' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description[0]) }}></li>}
                         </ul>
                         <div className='text-sm flex flex-col gap-5'>
                             <SelectQuantity

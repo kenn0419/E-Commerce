@@ -1,9 +1,10 @@
 import React, { memo, Fragment, useState } from 'react'
 import logo from 'assets/logo.png'
 import { adminSidebar } from 'ultils/contants'
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import clsx from 'clsx';
 import icons from 'ultils/icon';
+import path from 'ultils/path';
 
 const activeStyle = 'px-4 py-2 flex items-center gap-2 text-gray-900 bg-gray-400';
 const notActiveStyle = 'px-4 py-2 flex items-center gap-2 text-gray-900 hover:bg-gray-300';
@@ -21,7 +22,9 @@ const AdminSidebar = () => {
     return (
         <div className='bg-white h-full py-4'>
             <div className='flex flex-col items-center justify-center p-4 gap-2'>
-                <img src={logo} alt='' className='w-[250px] object-cover' />
+                <Link to={`/${path.HOME}`}>
+                    <img src={logo} alt='' className='w-[250px] object-cover' />
+                </Link>
                 <span>Admin Workspace</span>
             </div>
             <div>

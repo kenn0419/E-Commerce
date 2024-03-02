@@ -3,7 +3,10 @@ const productController = require('../controllers/productController');
 const { verifyAccessToken, isAdmin } = require('../middlewares/verifyToken')
 const uploader = require('../config/cloudinary.config');
 
-router.post('/', [verifyAccessToken, isAdmin], productController.createProduct);
+router.post('/', [verifyAccessToken, isAdmin], uploader.fields([
+    { name: 'images', maxCount: 10 },
+    { name: 'thumb', maxCount: 1 }
+]), productController.createProduct);
 router.get('/', productController.getProducts);
 router.put('/ratings', [verifyAccessToken], productController.ratings);
 
