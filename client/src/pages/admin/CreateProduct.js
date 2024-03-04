@@ -1,13 +1,15 @@
 import { apiCreateProduct } from 'apis';
-import { Button, InputForm, MarkDownEditor, SelectForm, } from 'components';
+import { Button, InputForm, Loading, MarkDownEditor, SelectForm, } from 'components';
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { showModal } from 'store/app/appSlice';
 import { getBase64, validate } from 'ultils/helper';
 import icons from 'ultils/icon';
 
 const CreateProduct = () => {
+    const dispatch = useDispatch();
     const { FaRegTrashAlt } = icons;
     const { register, handleSubmit, formState: { errors }, reset, watch } = useForm();
     const { categories } = useSelector(state => state.app);
@@ -39,8 +41,22 @@ const CreateProduct = () => {
             if (finalPayload.images) {
                 for (let i of finalPayload.images) formData.append('images', i);
             }
+            dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
             const response = await apiCreateProduct(formData);
-            console.log(response);
+            dispatch(showModal({ isShowModal: false, modalChildren: null }))
+            if (response.success) {
+                reset();
+                setPreview({
+                    thumb: '',
+                    images: ''
+                });
+                setPayload({
+                    description: ''
+                })
+                toast.success(response.message);
+            } else {
+                toast.error(response.message);
+            }
         }
     }
     const handlePreviewThumb = async (file) => {

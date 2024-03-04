@@ -48,6 +48,7 @@ const getProducts = asyncHandler(async (req, res) => {
     queryString = queryString.replace(/\b(gte|gt|lt|lte)\b/g, item => `$${item}`)
     const formatedQuery = JSON.parse(queryString);
     let colorQueryObject = {};
+    let searchQueryObject = {};
 
     //Filtering
     if (queries?.title) {
@@ -68,7 +69,45 @@ const getProducts = asyncHandler(async (req, res) => {
         const colorQuery = colorArr.map(item => ({ color: { $regex: item, $options: 'i' } }));
         colorQueryObject = { $or: colorQuery }
     }
-    const q = { ...colorQueryObject, ...formatedQuery };
+    if (queries?.search) {
+        delete formatedQuery.search;
+        searchQueryObject = {
+            $or: [
+                {
+                    title: {
+                        $regex: queries.search,
+                        $options: 'i'
+                    },
+                },
+                {
+                    category: {
+                        $regex: queries.search,
+                        $options: 'i'
+                    },
+                },
+                {
+                    description: {
+                        $regex: queries.search,
+                        $options: 'i'
+                    },
+                },
+                {
+                    color: {
+                        $regex: queries.search,
+                        $options: 'i'
+                    },
+                },
+                {
+                    brand: {
+                        $regex: queries.search,
+                        $options: 'i'
+                    }
+                }
+            ]
+        }
+    }
+    const q = { ...colorQueryObject, ...searchQueryObject, ...formatedQuery };
+    console.log(q);
     let queryCommand = Product.find(q);
 
     //Sorting

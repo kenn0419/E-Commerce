@@ -79,7 +79,7 @@ const DetailProduct = () => {
             </div>
             <div className='w-main mx-auto mt-4 flex gap-3'>
                 <div className='w-2/5 flex flex-col gap-4'>
-                    <div className='w-[458px] h-[458px] border overflow-hidden'>
+                    <div className='w-[458px] h-[458px] border flex items-center overflow-hidden'>
                         <ReactImageMagnify {...{
                             smallImage: {
                                 alt: '',
@@ -88,8 +88,8 @@ const DetailProduct = () => {
                             },
                             largeImage: {
                                 src: currentImage,
-                                width: 1200,
-                                height: 1200
+                                width: 1800,
+                                height: 1500
                             }
                         }} />
                     </div>
@@ -120,10 +120,15 @@ const DetailProduct = () => {
                     </div>
                     <div className='mt-5'>
                         <ul className='px-5'>
-                            {product.description.length > 1 && product.description?.map(item => (
+                            {product?.description?.length > 1 && product?.description?.map(item => (
                                 <li key={item} className='list-square leading-6 text-[#6b6b6b] text-sm'>{item}</li>
                             ))}
-                            {product.description.length === 1 && <li className='list-square leading-6 text-[#6b6b6b] text-sm' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description[0]) }}></li>}
+                            {product?.description?.length === 1 &&
+                                <li
+                                    className='list-square leading-6 text-[#6b6b6b] text-sm'
+                                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description[0]) }}>
+                                </li>
+                            }
                         </ul>
                         <div className='text-sm flex flex-col gap-5'>
                             <SelectQuantity
