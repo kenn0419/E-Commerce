@@ -107,7 +107,6 @@ const getProducts = asyncHandler(async (req, res) => {
         }
     }
     const q = { ...colorQueryObject, ...searchQueryObject, ...formatedQuery };
-    console.log(q);
     let queryCommand = Product.find(q);
 
     //Sorting

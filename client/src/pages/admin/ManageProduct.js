@@ -2,18 +2,24 @@ import { apiGetProducts } from 'apis';
 import { InputForm, Pagination } from 'components'
 import useDebounce from 'hooks/useDebounce';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { formatMoney } from 'ultils/helper';
+import UpdateProduct from './UpdateProduct';
 
 const ManageProduct = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [params] = useSearchParams();
-    const { register, handleSubmit, formState: { errors }, reset, watch } = useForm();
+    const { register, formState: { errors }, watch } = useForm();
     const [products, setProducts] = useState([]);
     const [count, setCount] = useState(0);
+    const [editProduct, setEditProduct] = useState();
+    const [updated, setUpdated] = useState(false);
+    const reRender = useCallback(() => {
+        setUpdated(!updated);
+    }, [])
     const fetchApiProducts = async (params) => {
         const response = await apiGetProducts({ ...params, limit: process.env.REACT_APP_LIMIT });
         if (response.success) {
@@ -35,9 +41,12 @@ const ManageProduct = () => {
             navigate(location.pathname);
         }
         fetchApiProducts(searchParam);
-    }, [params, queriesDebounce])
+    }, [params, queriesDebounce, updated])
     return (
         <div className='w-full flex flex-col gap-4 relative'>
+            {editProduct && <div className='absolute inset-0 bg-gray-100 min-h-screen z-50'>
+                <UpdateProduct editProduct={editProduct} reRender={reRender} />
+            </div>}
             <h1 className='h-[75px] flex justify-between items-center text-3xl font-semibold px-4 border-b border-gray-400 fixed top-0 w-full bg-gray-100'>
                 <span>Manage Products</span>
             </h1>
@@ -66,6 +75,7 @@ const ManageProduct = () => {
                         <th>Color</th>
                         <th>Ratings</th>
                         <th>Updated</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -84,6 +94,17 @@ const ManageProduct = () => {
                             <td className='py-2 px-2'>{product.color || '###'}</td>
                             <td className='py-2 px-2'>{product.totalRating}</td>
                             <td className='py-2 px-2'>{moment(product.updatedAt).format('DD/MM/YYYY')}</td>
+                            <td className='py-2 px-2'>
+                                <div className='flex gap-2 items-center'>
+                                    <span
+                                        onClick={() => setEditProduct(product)}
+                                        className='cursor-pointer hover:underline hover:text-yellow-500'
+                                    >
+                                        Edit
+                                    </span>
+                                    <span className='cursor-pointer hover:underline hover:text-red-500'>Delete</span>
+                                </div>
+                            </td>
                         </tr>
                     ))}
                 </tbody>

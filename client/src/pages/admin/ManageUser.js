@@ -207,33 +207,35 @@ const ManageUser = () => {
                                             </span>}
                                     </td>
                                     <td className='py-2 px-2'>{moment(user.createdAt).format('DD/MM/YYYY')}</td>
-                                    <td className='py-2 px-2 flex items-center gap-3 justify-center'>
-                                        {editItem?._id === user._id ? <span
-                                            className='cursor-pointer text-yellow-600 hover:underline'
-                                            onClick={() => setEditItem()}
-                                        >
-                                            Back
-                                        </span> : <span
-                                            className='cursor-pointer text-yellow-600 hover:underline'
-                                            onClick={() => {
-                                                reset({
-                                                    email: editItem?.email,
-                                                    firstname: editItem?.firstname,
-                                                    lastname: editItem?.lastname,
-                                                    role: editItem?.role,
-                                                    mobile: editItem?.mobile,
-                                                    isBlocked: editItem?.isBlocked,
-                                                })
-                                                setEditItem(user);
-                                            }}
-                                        >
-                                            Edit
-                                        </span>}
-                                        <span
-                                            onClick={() => handleDeleteUser(user._id, `${user.firstname} ${user.lastname}`)}
-                                            className='cursor-pointer text-red-600 hover:underline'
-                                        >
-                                            Delete</span>
+                                    <td className='py-2 px-2'>
+                                        <div className='flex items-center gap-3 justify-center'>
+                                            {editItem?._id === user._id ? <span
+                                                className='cursor-pointer text-yellow-600 hover:underline'
+                                                onClick={() => setEditItem()}
+                                            >
+                                                Back
+                                            </span> : <span
+                                                className='cursor-pointer text-yellow-600 hover:underline'
+                                                onClick={() => {
+                                                    reset({
+                                                        email: editItem?.email,
+                                                        firstname: editItem?.firstname,
+                                                        lastname: editItem?.lastname,
+                                                        role: editItem?.role,
+                                                        mobile: editItem?.mobile,
+                                                        isBlocked: editItem?.isBlocked,
+                                                    })
+                                                    setEditItem(user);
+                                                }}
+                                            >
+                                                Edit
+                                            </span>}
+                                            <span
+                                                onClick={() => handleDeleteUser(user._id, `${user.firstname} ${user.lastname}`)}
+                                                className='cursor-pointer text-red-600 hover:underline'
+                                            >
+                                                Delete</span>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
