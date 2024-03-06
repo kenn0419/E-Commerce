@@ -12,7 +12,10 @@ router.put('/ratings', [verifyAccessToken], productController.ratings);
 
 router.put('/upload-image/:pid', [verifyAccessToken, isAdmin], uploader.array('images', 10), productController.uploadImageProduct);
 router.delete('/:pid', [verifyAccessToken, isAdmin], productController.deleteProduct);
-router.put('/:pid', [verifyAccessToken, isAdmin], productController.updateProduct);
+router.put('/:pid', [verifyAccessToken, isAdmin], uploader.fields([
+    { name: 'images', maxCount: 10 },
+    { name: 'thumb', maxCount: 1 }
+]), productController.updateProduct);
 router.get('/:pid', productController.getProduct);
 
 module.exports = router;

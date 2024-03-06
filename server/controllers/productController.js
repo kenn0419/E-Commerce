@@ -142,6 +142,13 @@ const getProducts = asyncHandler(async (req, res) => {
 
 const updateProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params;
+    const files = req.files;
+    if (files?.thumb) {
+        req.body.thumb = files.thumb[0].path;
+    }
+    if (files?.images) {
+        req.body.images = files.images.map(image => image.path)
+    }
     if (req.body.title) {
         req.body.slug = slugify(req.body.title);
     }
@@ -219,6 +226,7 @@ const uploadImageProduct = asyncHandler(async (req, res) => {
     }, { new: true });
     return res.json({
         success: product ? true : false,
+        message: 'Updated successfully',
         product
     });
 })

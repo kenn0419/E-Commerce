@@ -1,6 +1,6 @@
 import { FaPhoneAlt, FaUser, FaRegStar, FaHeart, FaEye, FaShieldAlt, FaTruck, FaGift, FaReply, FaTty, FaProductHunt, FaRegTrashAlt } from "react-icons/fa";
 import { MdEmail, MdOutlineKeyboardArrowRight, MdLocationOn, MdDashboard, MdGroup, MdOutlineProductionQuantityLimits } from "react-icons/md";
-import { IoBagSharp } from "react-icons/io5";
+import { IoBagSharp, IoCloseOutline } from "react-icons/io5";
 import { FaStar } from "react-icons/fa6";
 import { TiThMenu } from "react-icons/ti";
 import { FiLogOut } from "react-icons/fi";
@@ -32,6 +32,7 @@ const icons = {
     FaProductHunt,
     MdOutlineProductionQuantityLimits,
     FaRegTrashAlt,
+    IoCloseOutline,
 }
 
 export default icons

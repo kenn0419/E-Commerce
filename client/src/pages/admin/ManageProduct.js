@@ -1,4 +1,4 @@
-import { apiGetProducts } from 'apis';
+import { apiDeleteProduct, apiGetProducts } from 'apis';
 import { InputForm, Pagination } from 'components'
 import useDebounce from 'hooks/useDebounce';
 import moment from 'moment';
@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form'
 import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { formatMoney } from 'ultils/helper';
 import UpdateProduct from './UpdateProduct';
+import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 const ManageProduct = () => {
     const navigate = useNavigate();
@@ -29,23 +31,47 @@ const ManageProduct = () => {
     }
     const queriesDebounce = useDebounce(watch('search'), 500)
     useEffect(() => {
-        const searchParam = Object.fromEntries([...params]);
         if (queriesDebounce) {
-            searchParam.search = queriesDebounce;
-            delete searchParam.page;
             navigate({
                 pathname: location.pathname,
-                search: createSearchParams(searchParam).toString()
+                search: createSearchParams({ search: queriesDebounce }).toString()
             })
         } else {
             navigate(location.pathname);
         }
+    }, [queriesDebounce])
+    useEffect(() => {
+        const searchParam = Object.fromEntries([...params]);
         fetchApiProducts(searchParam);
-    }, [params, queriesDebounce, updated])
+
+    }, [params, updated])
+    const handleDelete = (pid) => {
+        Swal.fire({
+            title: 'Delete User',
+            text: 'Are you sure to delete this product',
+            showCancelButton: true,
+            cancelButtonText: 'Cancel',
+            cancelButtonColor: 'gray'
+        }).then(async (res) => {
+            if (res.isConfirmed) {
+                const response = await apiDeleteProduct(pid);
+                if (response.success) {
+                    toast.success(response.message);
+                    reRender();
+                } else {
+                    toast.error(response.message);
+                }
+            }
+        })
+    }
     return (
         <div className='w-full flex flex-col gap-4 relative'>
             {editProduct && <div className='absolute inset-0 bg-gray-100 min-h-screen z-50'>
-                <UpdateProduct editProduct={editProduct} reRender={reRender} />
+                <UpdateProduct
+                    editProduct={editProduct}
+                    reRender={reRender}
+                    setEditProduct={setEditProduct}
+                />
             </div>}
             <h1 className='h-[75px] flex justify-between items-center text-3xl font-semibold px-4 border-b border-gray-400 fixed top-0 w-full bg-gray-100'>
                 <span>Manage Products</span>
@@ -102,7 +128,12 @@ const ManageProduct = () => {
                                     >
                                         Edit
                                     </span>
-                                    <span className='cursor-pointer hover:underline hover:text-red-500'>Delete</span>
+                                    <span
+                                        className='cursor-pointer hover:underline hover:text-red-500'
+                                        onClick={() => handleDelete(product._id)}
+                                    >
+                                        Delete
+                                    </span>
                                 </div>
                             </td>
                         </tr>

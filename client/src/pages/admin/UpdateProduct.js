@@ -1,3 +1,4 @@
+import { apiUpdateProduct } from 'apis';
 import { Button, InputForm, Loading, MarkDownEditor, SelectForm } from 'components';
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
@@ -5,9 +6,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { showModal } from 'store/app/appSlice';
 import { getBase64, validate } from 'ultils/helper';
+import icons from 'ultils/icon';
 
-const UpdateProduct = ({ editProduct, reRender }) => {
-    console.log(editProduct);
+const UpdateProduct = ({ editProduct, reRender, setEditProduct }) => {
+    const { IoCloseOutline } = icons;
     const dispatch = useDispatch();
     const { categories } = useSelector(state => state.app);
     const { register, handleSubmit, formState: { errors }, reset, watch } = useForm();
@@ -48,11 +50,6 @@ const UpdateProduct = ({ editProduct, reRender }) => {
         const toBase64 = await getBase64(file);
         setPreview(prev => ({ ...prev, thumb: toBase64 }))
     }
-    useEffect(() => {
-        if (watch('thumb')) {
-            handlePreviewThumb(watch('thumb')[0]);
-        }
-    }, [watch('thumb')])
     const handlePreviewImages = async (files) => {
         const imagesPreview = [];
         for (let file of files) {
@@ -61,7 +58,7 @@ const UpdateProduct = ({ editProduct, reRender }) => {
                 return;
             }
             const toBase64 = await getBase64(file);
-            imagesPreview.push({ name: file.name, path: toBase64 });
+            imagesPreview.push(toBase64);
         }
         if (imagesPreview.length > 0) {
             setPreview(prev => ({ ...prev, images: imagesPreview }))
@@ -69,51 +66,58 @@ const UpdateProduct = ({ editProduct, reRender }) => {
 
     }
     useEffect(() => {
-        if (watch('images')) {
+        if (watch('thumb') instanceof FileList && watch('thumb').length > 0) {
+            handlePreviewThumb(watch('thumb')[0]);
+        }
+    }, [watch('thumb')])
+    useEffect(() => {
+        if (watch('images') instanceof FileList && watch('images').length > 0) {
             handlePreviewImages(watch('images'));
         }
     }, [watch('images')])
-    const handleCreateProduct = async (data) => {
+    const handleUpdateProduct = async (data) => {
         const invalids = validate(payload, setInValidFields);
         if (invalids === 0) {
-            if (data?.brand) data.brand = categories.find(item => item.title === data.category)?.brand.find((item, index) => index === +data.brand);
+            if (data?.brand) data.brand = categories.find(item => item.title === data.category)?.brand.find(item => item.toLowerCase() === data.brand);
             if (data?.category) data.category = categories.find(item => item.title === data.category)?.title;
             const finalPayload = { ...data, ...payload };
             const formData = new FormData();
             for (let i of Object.entries(finalPayload)) {
                 formData.append(i[0], i[1]);
             }
+            if (finalPayload.thumb.length === 0) {
+                formData.delete('thumb');
+            }
+            if (finalPayload.images.length === 0) {
+                formData.delete('images');
+            }
             if (finalPayload.thumb) {
-                formData.append('thumb', finalPayload.thumb[0])
+                formData.append('thumb', finalPayload?.thumb?.length === 0 ? preview.thumb : finalPayload.thumb[0])
             }
             if (finalPayload.images) {
-                for (let i of finalPayload.images) formData.append('images', i);
+                const images = finalPayload.images.length === 0 ? preview.images : finalPayload.images;
+                for (let image of images) formData.append('images', image);
             }
             dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
-            // const response = await apiCreateProduct(formData);
-            // dispatch(showModal({ isShowModal: false, modalChildren: null }))
-            // if (response.success) {
-            //     reset();
-            //     setPreview({
-            //         thumb: '',
-            //         images: ''
-            //     });
-            //     setPayload({
-            //         description: ''
-            //     })
-            //     toast.success(response.message);
-            // } else {
-            //     toast.error(response.message);
-            // }
+            const response = await apiUpdateProduct(formData, editProduct._id);
+            dispatch(showModal({ isShowModal: false, modalChildren: null }))
+            if (response.success) {
+                reRender();
+                setEditProduct();
+                toast.success(response.message);
+            } else {
+                toast.error(response.message);
+            }
         }
     }
     return (
         <div className='w-full flex flex-col gap-4 relative'>
-            <h1 className='h-[75px] bg-gray-100 flex justify-between items-center text-3xl font-semibold px-4 border-b border-gray-400 fixed top-0 w-full z-50'>
+            <h1 className='h-[75px] bg-gray-100 flex justify-between items-center text-3xl font-semibold px-4 border-b border-gray-400 fixed top-0 right-0 left-[327px] z-50'>
                 <span>Updated Products</span>
+                <span className='cursor-pointer hover:text-red-500' onClick={() => setEditProduct()}><IoCloseOutline size={32} /></span>
             </h1>
             <div className='p-4 mt-[75px]'>
-                <form onSubmit={handleSubmit()}>
+                <form onSubmit={handleSubmit(handleUpdateProduct)}>
                     <InputForm
                         label='Name product'
                         register={register}
@@ -201,7 +205,7 @@ const UpdateProduct = ({ editProduct, reRender }) => {
                         <input
                             type='file'
                             id='thumb'
-                            {...register('thumb', { required: 'Require choose file' })}
+                            {...register('thumb')}
                         />
                         {errors['thumb'] && <small className='text-xs text-red-600 italic'>{errors['thumb'].message}</small>}
                     </div>
@@ -214,7 +218,7 @@ const UpdateProduct = ({ editProduct, reRender }) => {
                             type='file'
                             id='images'
                             multiple
-                            {...register('images', { required: 'Require choose file' })}
+                            {...register('images')}
                         />
                         {errors['images'] && <small className='text-xs text-red-600 italic'>{errors['images'].message}</small>}
                     </div>
@@ -229,8 +233,7 @@ const UpdateProduct = ({ editProduct, reRender }) => {
                             </div>
                         ))}
                     </div>}
-                    <div className='flex justify-between mt-4'>
-                        <Button backGround={`bg-gray-500`} handleOnClick={() => reRender()}>Cancel</Button>
+                    <div className='flex justify-end mt-4'>
                         <Button type='submit'>Update Product</Button>
                     </div>
                 </form>
