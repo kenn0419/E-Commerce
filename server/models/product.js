@@ -65,7 +65,7 @@ var productSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    varriant: [
+    variant: [
         {
             color: String,
             price: Number,

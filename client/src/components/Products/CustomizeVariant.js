@@ -1,4 +1,4 @@
-import { apiAddVarriant } from 'apis';
+import { apiAddVariant } from 'apis';
 import Button from 'components/Button/Button';
 import Loading from 'components/Common/Loading';
 import InputForm from 'components/Input/InputForm';
@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 import { getBase64 } from 'ultils/helper';
 import icons from 'ultils/icon'
 
-const CustomizeVarriant = ({ customizeVarriant, setCustomizeVarriant, reRender }) => {
+const CustomizeVariant = ({ customizeVariant, setCustomizeVariant, reRender }) => {
     const dispatch = useDispatch();
     const { IoCloseOutline } = icons;
     const { register, handleSubmit, formState: { errors }, reset, watch } = useForm();
@@ -21,11 +21,11 @@ const CustomizeVarriant = ({ customizeVarriant, setCustomizeVarriant, reRender }
     })
     useEffect(() => {
         reset({
-            title: customizeVarriant?.title,
-            color: customizeVarriant?.color,
-            price: customizeVarriant?.price,
+            title: customizeVariant?.title,
+            color: customizeVariant?.color,
+            price: customizeVariant?.price,
         })
-    }, [customizeVarriant])
+    }, [customizeVariant])
     const handlePreviewThumb = async (file) => {
         if (file?.type !== 'image/png' && file?.type !== 'image/jpeg' && file) {
             toast.warning('File is not supported!!!');
@@ -58,8 +58,8 @@ const CustomizeVarriant = ({ customizeVarriant, setCustomizeVarriant, reRender }
             handlePreviewImages(watch('images'));
         }
     }, [watch('images')])
-    const handleAddVarriant = async (data) => {
-        if (data.color === customizeVarriant?.color) {
+    const handleAddVariant = async (data) => {
+        if (data.color === customizeVariant?.color) {
             Swal.fire('Oops!!!', 'The color cannot match the default color', 'info');
             return;
         } else {
@@ -73,10 +73,12 @@ const CustomizeVarriant = ({ customizeVarriant, setCustomizeVarriant, reRender }
             if (data.images) {
                 for (let image of data.images) formData.append('images', image);
             }
-            const response = await apiAddVarriant(formData, customizeVarriant?._id);
+            dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
+            const response = await apiAddVariant(formData, customizeVariant?._id);
+            dispatch(showModal({ isShowModal: false, modalChildren: null }))
             if (response.success) {
                 reRender();
-                setCustomizeVarriant();
+                setCustomizeVariant();
                 toast.success(response.message);
             } else {
                 toast.error(response.message);
@@ -86,11 +88,11 @@ const CustomizeVarriant = ({ customizeVarriant, setCustomizeVarriant, reRender }
     return (
         <div className='w-full flex flex-col gap-4 relative'>
             <h1 className='h-[75px] bg-gray-100 flex justify-between items-center text-3xl font-semibold px-4 border-b border-gray-400 fixed top-0 right-0 left-[327px] z-50'>
-                <span>Customize Varriant Of Products</span>
-                <span className='cursor-pointer hover:text-red-500' onClick={() => setCustomizeVarriant()}><IoCloseOutline size={32} /></span>
+                <span>Customize Variant Of Products</span>
+                <span className='cursor-pointer hover:text-red-500' onClick={() => setCustomizeVariant()}><IoCloseOutline size={32} /></span>
             </h1>
             <div className='mt-[90px]'>
-                <form className='p-4' onSubmit={handleSubmit(handleAddVarriant)}>
+                <form className='p-4' onSubmit={handleSubmit(handleAddVariant)}>
                     <div className='flex gap-4 items-center flex-wrap'>
                         <InputForm
                             label='Original Name'
@@ -98,12 +100,12 @@ const CustomizeVarriant = ({ customizeVarriant, setCustomizeVarriant, reRender }
                             errors={errors}
                             id='title'
                             style={`flex-auto`}
-                            placeholder='Title of varriant'
+                            placeholder='Title of variant'
                         />
                     </div>
                     <div className='flex gap-4 mt-5 items-center'>
                         <InputForm
-                            label='Price Varriant'
+                            label='Price Variant'
                             register={register}
                             errors={errors}
                             id='price'
@@ -111,11 +113,11 @@ const CustomizeVarriant = ({ customizeVarriant, setCustomizeVarriant, reRender }
                                 required: 'Require fill this field',
                             }}
                             style={`flex-auto`}
-                            placeholder='Price of varriant'
+                            placeholder='Price of variant'
                             type='number'
                         />
                         <InputForm
-                            label='Color Varriant'
+                            label='Color Variant'
                             register={register}
                             errors={errors}
                             id='color'
@@ -123,7 +125,7 @@ const CustomizeVarriant = ({ customizeVarriant, setCustomizeVarriant, reRender }
                                 required: 'Require fill this field',
                             }}
                             style={`flex-auto`}
-                            placeholder='Color of varriant'
+                            placeholder='Color of variant'
                         />
                     </div>
                     <div className='mt-5 flex flex-col gap-2'>
@@ -139,7 +141,7 @@ const CustomizeVarriant = ({ customizeVarriant, setCustomizeVarriant, reRender }
                         <img src={preview.thumb} alt='thumbnail' className='w-[200px] object-contain' />
                     </div>}
                     <div className='mt-4 flex flex-col gap-2'>
-                        <label htmlFor='images' className='text-base font-semibold'>Upload images of varriant</label>
+                        <label htmlFor='images' className='text-base font-semibold'>Upload images of variant</label>
                         <input
                             type='file'
                             id='images'
@@ -163,7 +165,7 @@ const CustomizeVarriant = ({ customizeVarriant, setCustomizeVarriant, reRender }
                         ))}
                     </div>}
                     <div className='flex justify-end mt-4'>
-                        <Button type='submit'>Add Varriant</Button>
+                        <Button type='submit'>Add Variant</Button>
                     </div>
                 </form>
             </div>
@@ -171,4 +173,4 @@ const CustomizeVarriant = ({ customizeVarriant, setCustomizeVarriant, reRender }
     )
 }
 
-export default memo(CustomizeVarriant)
+export default memo(CustomizeVariant)

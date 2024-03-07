@@ -44,7 +44,6 @@ const SearchItem = ({ name, activeClick, handleChangeActiveFilter, type = 'check
         } else {
             delete queries.color;
         }
-        console.log(queries);
         navigate({
             pathname: `/${category}`,
             search: createSearchParams(queries).toString(),

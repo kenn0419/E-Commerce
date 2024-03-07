@@ -1,5 +1,5 @@
 import { apiDeleteProduct, apiGetProducts } from 'apis';
-import { CustomizeVarriant, InputForm, Pagination, UpdateProduct } from 'components'
+import { CustomizeVariant, InputForm, Pagination, UpdateProduct } from 'components'
 import useDebounce from 'hooks/useDebounce';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react'
@@ -20,7 +20,7 @@ const ManageProduct = () => {
     const [count, setCount] = useState(0);
     const [editProduct, setEditProduct] = useState();
     const [updated, setUpdated] = useState(false);
-    const [customizeVarriant, setCustomizeVarriant] = useState();
+    const [customizeVariant, setCustomizeVariant] = useState();
     const reRender = useCallback(() => {
         setUpdated(!updated);
     }, [updated])
@@ -76,10 +76,10 @@ const ManageProduct = () => {
                     setEditProduct={setEditProduct}
                 />
             </div>}
-            {customizeVarriant && <div className='absolute inset-0 bg-gray-100 min-h-screen z-50'>
-                <CustomizeVarriant
-                    customizeVarriant={customizeVarriant}
-                    setCustomizeVarriant={setCustomizeVarriant}
+            {customizeVariant && <div className='absolute inset-0 bg-gray-100 min-h-screen z-50'>
+                <CustomizeVariant
+                    customizeVariant={customizeVariant}
+                    setCustomizeVariant={setCustomizeVariant}
                     reRender={reRender}
                 />
             </div>}
@@ -110,6 +110,7 @@ const ManageProduct = () => {
                         <th>Sold</th>
                         <th>Color</th>
                         <th>Ratings</th>
+                        <th>Variant</th>
                         <th>Updated</th>
                         <th>Actions</th>
                     </tr>
@@ -129,6 +130,7 @@ const ManageProduct = () => {
                             <td className='py-2 px-2'>{product.sold}</td>
                             <td className='py-2 px-2'>{product.color || '###'}</td>
                             <td className='py-2 px-2'>{product.totalRating}</td>
+                            <td className='py-2 px-2'>{product?.variant?.length}</td>
                             <td className='py-2 px-2'>{moment(product.updatedAt).format('DD/MM/YYYY')}</td>
                             <td className='py-2 px-2'>
                                 <div className='flex gap-2 items-center'>
@@ -146,7 +148,7 @@ const ManageProduct = () => {
                                     </span>
                                     <span
                                         className='cursor-pointer hover:underline hover:text-blue-900  text-blue-500'
-                                        onClick={() => setCustomizeVarriant(product)}
+                                        onClick={() => setCustomizeVariant(product)}
                                     >
                                         <TiThMenu />
                                     </span>

@@ -243,11 +243,10 @@ const addVarriant = asyncHandler(async (req, res) => {
     }
     if (thumb) req.body.thumb = thumb;
     if (images) req.body.images = images;
-    console.log(req.body);
     let response = await Product.findByIdAndUpdate(pid, {
         $push:
         {
-            varriant: { title, price, color, thumb, images, cku: makeSKU().toUpperCase() }
+            variant: { title, price, color, thumb, images, sku: makeSKU().toUpperCase() }
         }
     }, { new: true });
     return res.status(200).json({
