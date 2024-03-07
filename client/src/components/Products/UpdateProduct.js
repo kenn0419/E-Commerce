@@ -1,6 +1,6 @@
 import { apiUpdateProduct } from 'apis';
 import { Button, InputForm, Loading, MarkDownEditor, SelectForm } from 'components';
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -242,4 +242,4 @@ const UpdateProduct = ({ editProduct, reRender, setEditProduct }) => {
     )
 }
 
-export default UpdateProduct
+export default memo(UpdateProduct)

@@ -2,6 +2,7 @@ const { json, response } = require('express');
 const Product = require('../models/product');
 const asyncHandler = require('express-async-handler');
 const slugify = require('slugify');
+const makeSKU = require('uniqid');
 
 const createProduct = asyncHandler(async (req, res) => {
     const { title, price, description, brand, category, color } = req.body;
@@ -232,7 +233,28 @@ const uploadImageProduct = asyncHandler(async (req, res) => {
 })
 
 
-
+const addVarriant = asyncHandler(async (req, res) => {
+    const { pid } = req.params;
+    const { title, price, color } = req.body;
+    const thumb = req?.files?.thumb[0]?.path;
+    const images = req?.files?.images?.map(item => item.path);
+    if (!title && !price && !color) {
+        throw new Error('Missing inputs');
+    }
+    if (thumb) req.body.thumb = thumb;
+    if (images) req.body.images = images;
+    console.log(req.body);
+    let response = await Product.findByIdAndUpdate(pid, {
+        $push:
+        {
+            varriant: { title, price, color, thumb, images, cku: makeSKU().toUpperCase() }
+        }
+    }, { new: true });
+    return res.status(200).json({
+        success: response ? true : false,
+        message: response ? 'Create varrants successfully' : 'Something went wrong',
+    })
+})
 
 module.exports = {
     createProduct,
@@ -242,4 +264,5 @@ module.exports = {
     deleteProduct,
     ratings,
     uploadImageProduct,
+    addVarriant
 }

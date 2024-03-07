@@ -1,16 +1,17 @@
 import { apiDeleteProduct, apiGetProducts } from 'apis';
-import { InputForm, Pagination } from 'components'
+import { CustomizeVarriant, InputForm, Pagination, UpdateProduct } from 'components'
 import useDebounce from 'hooks/useDebounce';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { formatMoney } from 'ultils/helper';
-import UpdateProduct from './UpdateProduct';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
+import icons from 'ultils/icon';
 
 const ManageProduct = () => {
+    const { FaEdit, FaRegTrashAlt, TiThMenu } = icons;
     const navigate = useNavigate();
     const location = useLocation();
     const [params] = useSearchParams();
@@ -19,9 +20,10 @@ const ManageProduct = () => {
     const [count, setCount] = useState(0);
     const [editProduct, setEditProduct] = useState();
     const [updated, setUpdated] = useState(false);
+    const [customizeVarriant, setCustomizeVarriant] = useState();
     const reRender = useCallback(() => {
         setUpdated(!updated);
-    }, [])
+    }, [updated])
     const fetchApiProducts = async (params) => {
         const response = await apiGetProducts({ ...params, limit: process.env.REACT_APP_LIMIT });
         if (response.success) {
@@ -49,9 +51,10 @@ const ManageProduct = () => {
         Swal.fire({
             title: 'Delete User',
             text: 'Are you sure to delete this product',
+            confirmButtonText: 'Delete',
             showCancelButton: true,
             cancelButtonText: 'Cancel',
-            cancelButtonColor: 'gray'
+            cancelButtonColor: 'gray',
         }).then(async (res) => {
             if (res.isConfirmed) {
                 const response = await apiDeleteProduct(pid);
@@ -65,12 +68,19 @@ const ManageProduct = () => {
         })
     }
     return (
-        <div className='w-full flex flex-col gap-4 relative'>
+        <div className='w-full flex flex-col gap-4 relative pl-2'>
             {editProduct && <div className='absolute inset-0 bg-gray-100 min-h-screen z-50'>
                 <UpdateProduct
                     editProduct={editProduct}
                     reRender={reRender}
                     setEditProduct={setEditProduct}
+                />
+            </div>}
+            {customizeVarriant && <div className='absolute inset-0 bg-gray-100 min-h-screen z-50'>
+                <CustomizeVarriant
+                    customizeVarriant={customizeVarriant}
+                    setCustomizeVarriant={setCustomizeVarriant}
+                    reRender={reRender}
                 />
             </div>}
             <h1 className='h-[75px] flex justify-between items-center text-3xl font-semibold px-4 border-b border-gray-400 fixed top-0 w-full bg-gray-100'>
@@ -124,15 +134,21 @@ const ManageProduct = () => {
                                 <div className='flex gap-2 items-center'>
                                     <span
                                         onClick={() => setEditProduct(product)}
-                                        className='cursor-pointer hover:underline hover:text-yellow-500'
+                                        className='cursor-pointer hover:underline hover:text-yellow-500 text-blue-500'
                                     >
-                                        Edit
+                                        <FaEdit />
                                     </span>
                                     <span
-                                        className='cursor-pointer hover:underline hover:text-red-500'
+                                        className='cursor-pointer hover:underline hover:text-red-500  text-blue-500'
                                         onClick={() => handleDelete(product._id)}
                                     >
-                                        Delete
+                                        <FaRegTrashAlt />
+                                    </span>
+                                    <span
+                                        className='cursor-pointer hover:underline hover:text-blue-900  text-blue-500'
+                                        onClick={() => setCustomizeVarriant(product)}
+                                    >
+                                        <TiThMenu />
                                     </span>
                                 </div>
                             </td>

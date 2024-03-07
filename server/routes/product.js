@@ -12,6 +12,10 @@ router.put('/ratings', [verifyAccessToken], productController.ratings);
 
 router.put('/upload-image/:pid', [verifyAccessToken, isAdmin], uploader.array('images', 10), productController.uploadImageProduct);
 router.delete('/:pid', [verifyAccessToken, isAdmin], productController.deleteProduct);
+router.put('/varriant/:pid', [verifyAccessToken, isAdmin], uploader.fields([
+    { name: 'images', maxCount: 10 },
+    { name: 'thumb', maxCount: 1 }
+]), productController.addVarriant);
 router.put('/:pid', [verifyAccessToken, isAdmin], uploader.fields([
     { name: 'images', maxCount: 10 },
     { name: 'thumb', maxCount: 1 }
