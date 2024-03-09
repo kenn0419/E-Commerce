@@ -223,6 +223,37 @@ export const adminSidebar = [
     },
 ]
 
+export const memberSidebar = [
+    {
+        id: 1,
+        text: 'Personal',
+        type: 'SINGLE',
+        path: `/${path.MEMBER}/${path.PERSONAL}`,
+        icon: icons.MdOutlineBroadcastOnPersonal
+    },
+    {
+        id: 2,
+        text: 'My Cart',
+        type: 'SINGLE',
+        path: `/${path.MEMBER}/${path.MYCART}`,
+        icon: icons.FaCartArrowDown
+    },
+    {
+        id: 3,
+        text: 'Wishlist',
+        type: 'SINGLE',
+        path: `/${path.MEMBER}/${path.WISHLIST}`,
+        icon: icons.TbFileLike
+    },
+    {
+        id: 4,
+        text: 'Buy History',
+        type: 'SINGLE',
+        path: `/${path.MEMBER}/${path.HISTORY}`,
+        icon: icons.MdHistoryEdu
+    },
+]
+
 export const roles = [
     {
         code: 0,

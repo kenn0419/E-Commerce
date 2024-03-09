@@ -8,7 +8,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Modal } from 'components';
 import { AdminLayout, CreateProduct, Dashboard, ManageOder, ManageProduct, ManageUser } from 'pages/admin';
-import { MemberLayout, Personal } from 'pages/member';
+import { History, MemberLayout, MyCart, Personal, WishList } from 'pages/member';
 
 function App() {
   const dispatch = useDispatch();
@@ -38,6 +38,9 @@ function App() {
         </Route>
         <Route path={path.MEMBER} element={<MemberLayout />}>
           <Route path={path.PERSONAL} element={<Personal />} />
+          <Route path={path.MYCART} element={<MyCart />} />
+          <Route path={path.WISHLIST} element={<WishList />} />
+          <Route path={path.HISTORY} element={<History />} />
         </Route>
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />
         <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />

@@ -1,12 +1,27 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import logo from 'assets/logo.png';
 import icons from 'ultils/icon';
 import { Link } from 'react-router-dom';
 import path from 'ultils/path';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from 'store/user/userSlice';
 const Header = () => {
+    const dispatch = useDispatch();
     const { current, isLoggedIn } = useSelector(state => state.user);
     const { FaPhoneAlt, MdEmail, FaUser, IoBagSharp } = icons;
+    const [options, setOptions] = useState(false);
+    const handleClickOutOption = (e) => {
+        const profile = document.querySelector('#profile');
+        if (!profile.contains(e.target)) {
+            setOptions(false);
+        }
+    }
+    useEffect(() => {
+        document.addEventListener('click', handleClickOutOption);
+        return () => {
+            document.removeEventListener('click', handleClickOutOption);
+        }
+    }, [])
     return (
         <div className='w-main h-[110px] py-[35px] flex justify-between'>
             <Link to={`${path.HOME}`}>
@@ -32,13 +47,19 @@ const Header = () => {
                         <IoBagSharp color='red' size={18} />
                         <span>0 item</span>
                     </div>
-                    <Link
-                        className='flex justify-center items-center px-5 gap-1 hover:underline cursor-pointer'
-                        to={+current?.role === 0 ? `/${path.ADMIN}/${path.DASHBOARD}` : `/${path.MEMBER}/${path.PERSONAL}`}
+                    <div
+                        className='flex justify-center items-center px-5 gap-1 hover:underline cursor-pointer relative'
+                        onClick={() => setOptions(prev => !prev)}
+                        id='profile'
                     >
                         <FaUser size={18} />
                         <span>Profile</span>
-                    </Link>
+                        {options && <div onClick={e => e.stopPropagation()} className='absolute top-full left-4 border bg-white border-gray-300 min-w-[150px]'>
+                            <Link className='p-2 border-b block hover:bg-sky-100 w-full' to={`/${path.MEMBER}/${path.PERSONAL}`}>Personal</Link>
+                            {+current.role === 0 && <Link to={`/${path.ADMIN}/${path.DASHBOARD}`} className='p-2 border-b block hover:bg-sky-100 w-full'>Admin WorkSpace</Link>}
+                            <span className='p-2 block hover:bg-sky-100 w-full' onClick={() => dispatch(logout())}>Logout</span>
+                        </div>}
+                    </div>
                 </>}
             </div>
         </div>
