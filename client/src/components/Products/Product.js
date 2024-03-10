@@ -6,16 +6,31 @@ import { formatMoney } from 'ultils/helper';
 import { renderStar } from 'ultils/helper';
 import { SelectOption } from '..';
 import icons from 'ultils/icon';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { showModal } from 'store/app/appSlice';
+import { DetailProduct } from 'pages/public';
 
 const Product = ({ productData, isNew, pid, normal }) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { FaHeart, FaEye, TiThMenu } = icons;
     const [isShowOptions, setIsShowOptions] = useState(false);
+    const handleOptionsClick = (e, option) => {
+        e.stopPropagation();
+        if (option === 'QUICK_VIEW') {
+            dispatch(showModal({ isShowModal: true, modalChildren: <DetailProduct isQuickView data={{ pid: productData._id, category: productData.category }} /> }));
+        } else if (option === 'MENU') {
+            navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`)
+        } else {
+            // navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`)
+        }
+    }
     return (
         <div className='w-full text-base px-[10px]'>
-            <Link
+            <div
                 className='w-full border p-[15px] flex flex-col items-center gap-2'
-                to={`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`}
+                onClick={() => navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`)}
                 onMouseEnter={e => setIsShowOptions(true)}
                 onMouseLeave={e => setIsShowOptions(false)}
             >
@@ -23,9 +38,9 @@ const Product = ({ productData, isNew, pid, normal }) => {
                     {isShowOptions && <div
                         className='absolute bottom-[-10px] z-30 flex justify-center w-full gap-2 animate-slide-top'
                     >
-                        <SelectOption icon={<FaHeart />} />
-                        <SelectOption icon={<TiThMenu />} />
-                        <SelectOption icon={<FaEye />} />
+                        <span onClick={(e) => handleOptionsClick(e, 'QUICK_VIEW')}><SelectOption icon={<FaEye />} /></span>
+                        <span onClick={(e) => handleOptionsClick(e, 'MENU')}><SelectOption icon={<TiThMenu />} /></span>
+                        <span onClick={(e) => handleOptionsClick(e, 'WISHLIST')}><SelectOption icon={<FaHeart />} /></span>
                     </div>}
                     <img
                         src={productData?.thumb || no_image}
@@ -39,7 +54,7 @@ const Product = ({ productData, isNew, pid, normal }) => {
                     <span className='flex'>{renderStar(productData?.totalRating)?.map((item, index) => <span key={index}>{item}</span>)}</span>
                     <span className=''>{formatMoney(productData.price)}</span>
                 </div>
-            </Link>
+            </div>
         </div>
     )
 }

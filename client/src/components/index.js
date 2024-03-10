@@ -34,4 +34,5 @@ export { default as MarkDownEditor } from './Input/MarkDownEditor';
 export { default as UpdateProduct } from './Products/UpdateProduct';
 export { default as CustomizeVariant } from './Products/CustomizeVariant';
 export { default as MemberSidebar } from './Sidebar/MemberSidebar';
+export { default as QuickView } from './Products/QuickView';
 

@@ -17,14 +17,16 @@ const settings = {
     slidesToScroll: 1
 };
 
-const DetailProduct = () => {
-    const { pid, category } = useParams();
+const DetailProduct = ({ isQuickView, data }) => {
+    const params = useParams();
     const [product, setProduct] = useState({});
     const [quantity, setQuantity] = useState(1);
     const [update, setUpdate] = useState(false);
     const [relativeProducts, setRelativeProducts] = useState([]);
     const [currentImage, setCurrentImage] = useState();
     const [variant, setVariant] = useState('');
+    const [pid, setPid] = useState();
+    const [category, setCategory] = useState();
     const [currentProduct, setCurrentProduct] = useState({
         title: '',
         color: '',
@@ -55,6 +57,16 @@ const DetailProduct = () => {
     const reRender = useCallback(() => {
         setUpdate(!update);
     }, [update])
+
+    useEffect(() => {
+        if (data) {
+            setPid(data.pid);
+            setCategory(data.category);
+        } else if (params) {
+            setPid(params.pid);
+            setCategory(params.category);
+        }
+    }, [data, params])
     const handleChangeQuantity = useCallback((option) => {
         if (Number(quantity) === 1 && option === 'minus') {
             return;
@@ -98,16 +110,19 @@ const DetailProduct = () => {
         }
     }, [update])
     return (
-        <div className='w-full'>
-            <div className='h-[81px] bg-gray-100 flex justify-center items-center'>
+        <div className={clsx('w-full')}>
+            {!isQuickView && <div className='h-[81px] bg-gray-100 flex justify-center items-center'>
                 <div className='w-main'>
                     <h3 className='font-semibold uppercase'>{currentProduct.title || product.title}</h3>
                     <Breadcrumbs title={currentProduct.title || product.title} category={category} />
                 </div>
-            </div>
-            <div className='w-main mx-auto mt-4 flex gap-3'>
-                <div className='w-2/5 flex flex-col gap-4'>
-                    <div className='w-[458px] h-[458px] border flex items-center overflow-hidden'>
+            </div>}
+            <div
+                onClick={e => e.stopPropagation()}
+                className={clsx('bg-white mx-auto mt-4 flex gap-3', isQuickView ? 'max-w-[900px] gap-16 p-8 max-h-[100vh] overflow-auto' : 'w-main')}
+            >
+                <div className={clsx('flex flex-col gap-4', isQuickView ? 'w-1/2' : 'w-2/5')}>
+                    <div className={clsx('border flex items-center overflow-hidden', isQuickView ? 'w-full h-[400px]' : 'w-[458px] h-[458px]')}>
                         <ReactImageMagnify {...{
                             smallImage: {
                                 alt: '',
@@ -152,7 +167,7 @@ const DetailProduct = () => {
                         </Slider>}
                     </div>
                 </div>
-                <div className='w-2/5 flex flex-col'>
+                <div className={clsx('flex flex-col', isQuickView ? 'w-1/2' : 'w-2/5')}>
                     <h3 className='text-[30px] font-semibold'>{formatMoney(currentProduct.price || product.price)}</h3>
                     <div className='flex items-center gap-4'>
                         <div className='flex items-start mt-4'>
@@ -207,30 +222,34 @@ const DetailProduct = () => {
                                 handleChangeQuantity={handleChangeQuantity}
                                 remainQuantity={product.quantity}
                             />
-                            <Button
-                                children='Add to Cart'
-                                fw={'w-full'}
-                            />
+                            <div className='p-2'>
+                                <Button
+                                    children='Add to Cart'
+                                    fw={'w-full'}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className='w-1/5'>
+                {!isQuickView && <div className='w-1/5'>
                     {extraInfo.map(item => <ExtraInfo title={item.title} sub={item.sub} iconImage={<item.icon color='white' size={18} />} id={item.id} />)}
+                </div>}
+            </div>
+            {!isQuickView && <>
+                <div className='w-main mx-auto mt-2'>
+                    <ProductInfo
+                        totalRatings={product.totalRating}
+                        ratings={product?.ratings}
+                        nameProduct={product?.title}
+                        pid={product?._id}
+                        reRender={reRender}
+                    />
                 </div>
-            </div>
-            <div className='w-main mx-auto mt-2'>
-                <ProductInfo
-                    totalRatings={product.totalRating}
-                    ratings={product?.ratings}
-                    nameProduct={product?.title}
-                    pid={product?._id}
-                    reRender={reRender}
-                />
-            </div>
-            <div className='w-main mx-auto mt-4'>
-                <h3 className='uppercase text-[20px] font-semibold py-[10px] border-hover border-b-2 mb-5'>OTHER CUSTOMERS ALSO BUY:</h3>
-                <CustomSlider products={relativeProducts} normal={true} />
-            </div>
+                <div className='w-main mx-auto mt-4'>
+                    <h3 className='uppercase text-[20px] font-semibold py-[10px] border-hover border-b-2 mb-5'>OTHER CUSTOMERS ALSO BUY:</h3>
+                    <CustomSlider products={relativeProducts} normal={true} />
+                </div>
+            </>}
         </div>
     )
 }
