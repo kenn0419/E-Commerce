@@ -256,13 +256,15 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 const updateUser = asyncHandler(async (req, res) => {
     const { _id } = req.user;
-    if (!_id || Object.keys(req.body).length === 0) {
-        throw new Error('Missing inputs');
+    const { firstname, lastname, email, mobile } = req.body;
+    const data = { firstname, lastname, email, mobile };
+    if (req.file) {
+        data.avatar = req.file.path;
     }
-    const user = await User.findByIdAndUpdate(_id, req.body, { new: true }).select('-password -role -refreshToken');
+    const user = await User.findByIdAndUpdate(_id, data, { new: true }).select('-password -role -refreshToken');
     return res.status(200).json({
-        success: response ? true : false,
-        message: response ? 'Update successfully' : 'Something went wrong',
+        success: user ? true : false,
+        message: user ? 'Update successfully' : 'Something went wrong',
         updatedUser: user ? user : ''
     })
 })

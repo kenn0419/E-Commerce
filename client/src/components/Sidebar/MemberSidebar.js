@@ -1,17 +1,18 @@
 import React, { memo, Fragment, useState } from 'react'
 import avatar from 'assets/avatar_default.png'
 import { memberSidebar } from 'ultils/contants'
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import clsx from 'clsx';
 import icons from 'ultils/icon';
 import { useSelector } from 'react-redux';
+import path from 'ultils/path';
 
 const activeStyle = 'px-4 py-2 flex items-center gap-2 text-gray-900 bg-gray-400';
 const notActiveStyle = 'px-4 py-2 flex items-center gap-2 text-gray-900 hover:bg-gray-300';
 
 const MemberSidebar = () => {
     const { current } = useSelector(state => state.user);
-    const { IoIosArrowDown, MdOutlineKeyboardArrowRight } = icons;
+    const { IoIosArrowDown, MdOutlineKeyboardArrowRight, FaHome } = icons;
     const [actived, setActived] = useState([]);
     const handleShowTab = (id) => {
         if (actived.some(item => item === id)) {
@@ -23,8 +24,8 @@ const MemberSidebar = () => {
     return (
         <div className='bg-white h-full py-4'>
             <div className='w-full flex flex-col justify-center items-center gap-2'>
-                <img src={current.avatar || avatar} alt='' className='w-[50px] object-cover' />
-                <span>{`${current.lastname} ${current.firstname}`}</span>
+                <img src={current.avatar || avatar} alt='' className='w-[50px] rounded-full object-cover' />
+                <span>{`${current.firstname} ${current.lastname}`}</span>
             </div>
             <div>
                 {memberSidebar.map(item => (
@@ -65,6 +66,12 @@ const MemberSidebar = () => {
                         }
                     </Fragment>
                 ))}
+                <div className='mt-8 hover:underline'>
+                    <Link className='px-4 py-2 flex items-center gap-2' to={`/${path.HOME}`}>
+                        <FaHome size={16} />
+                        Return Homepage
+                    </Link>
+                </div>
             </div>
         </div>
     )
