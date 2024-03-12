@@ -90,7 +90,13 @@ const login = asyncHandler(async (req, res) => {
 
 const getCurrent = asyncHandler(async (req, res) => {
     const { _id } = req.user;
-    const user = await User.findById(_id).select('-refreshToken -password');
+    const user = await User.findById(_id).select('-refreshToken -password').populate({
+        path: 'cart',
+        populate: {
+            path: 'product',
+            select: 'title thumb price color category'
+        }
+    });
     return res.status(200).json({
         success: true,
         data: user ? user : 'User not found'
@@ -313,7 +319,7 @@ const addIntoCart = asyncHandler(async (req, res) => {
             {
                 $set: {
                     "cart.$.quantity": +quantity,
-                    "cart.$.color": color
+                    "cart.$.color": color,
                 }
             },
             { new: true }
@@ -337,7 +343,7 @@ const removeProductFromCart = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     const { pid } = req.params;
     const user = await User.findById(_id);
-    const alreadyProduct = user.cart.find(item => item.product.toString() === pid);
+    const alreadyProduct = user.cart.find(item => item.product._id.toString() === pid);
     if (!alreadyProduct) {
         return res.status(200).json({
             success: true,

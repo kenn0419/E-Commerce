@@ -40,7 +40,7 @@ const Product = ({ productData, isNew, pid, normal }) => {
                     }
                 })
             } else {
-                if (current?.cart?.some(item => item.product === productData._id)) {
+                if (current?.cart?.some(item => item.product._id === productData._id)) {
                     const response = await apiRemoveProductFromCart(productData._id);
                     if (response.success) {
                         toast.success(response.message);
@@ -74,7 +74,7 @@ const Product = ({ productData, isNew, pid, normal }) => {
                     >
                         <span title='Quick View' onClick={(e) => handleOptionsClick(e, 'QUICK_VIEW')}><SelectOption icon={<FaEye />} /></span>
                         <span title='Add Carts' onClick={(e) => handleOptionsClick(e, 'CART')}>
-                            <SelectOption icon={current?.cart?.some(item => item.product === productData._id) ? <BsFillCartCheckFill /> : <FaCartArrowDown />} />
+                            <SelectOption icon={current?.cart?.some(item => item.product._id === productData._id) ? <BsFillCartCheckFill /> : <FaCartArrowDown />} />
                         </span>
                         <span title='Wishlist' onClick={(e) => handleOptionsClick(e, 'WISHLIST')}><SelectOption icon={<FaHeart />} /></span>
                     </div>}

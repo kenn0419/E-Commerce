@@ -12,6 +12,12 @@ module.exports = {
       square: 'square'
     },
     extend: {
+      gridRow: {
+        'span-7': 'span 7 / span 7',
+      },
+      gridTemplateRows: {
+        '10': 'repeat(10, minmax(0, 1fr))',
+      },
       boxShadow: {
         'main': '0 0 0 1px #1a1b188c;',
       },

@@ -1,28 +1,30 @@
 import { memo } from 'react'
 
-const SelectQuantity = ({ quantity, handleQuantiTy, handleChangeQuantity, remainQuantity }) => {
+const SelectQuantity = ({ quantity, handleQuantiTy, handleChangeQuantity, remainQuantity, isHiden }) => {
     return (
-        <div className='flex items-center mt-2'>
-            <span>Quantity:</span>
-            <span
-                className='font-semibold text-[24px] p-2 rounded-l-full border ml-1 cursor-pointer'
-                onClick={() => handleChangeQuantity('minus')}
-            >
-                -
-            </span>
-            <input
-                type='number'
-                className='border p-2 w-[60px] outline-none text-center'
-                value={quantity}
-                onChange={(e) => handleQuantiTy(e.target.value)}
-            />
-            <span
-                className='font-semibold text-[24px] p-2 rounded-r-full border mr-1 cursor-pointer'
-                onClick={() => handleChangeQuantity('plus')}
-            >
-                +
-            </span>
-            <span>{`${remainQuantity} products in stock`}</span>
+        <div className='flex items-center justify-between mt-2 w-full'>
+            {!isHiden && <span className='font-semibold text-base'>Quantity:</span>}
+            <div className='flex items-center mt-2 w-full justify-center'>
+                <span
+                    className='text-sm text-gray-500 border-r pr-1 border-black cursor-pointer'
+                    onClick={() => handleChangeQuantity('minus')}
+                >
+                    -
+                </span>
+                <input
+                    type='number'
+                    className='text-sm border w-[60px] outline-none border-none bg-white p-1 m-1 text-center text-gray-500'
+                    value={quantity}
+                    onChange={(e) => handleQuantiTy(e.target.value)}
+                />
+                <span
+                    className='text-sm text-gray-500 border-l pl-1 border-black cursor-pointer'
+                    onClick={() => handleChangeQuantity('plus')}
+                >
+                    +
+                </span>
+            </div>
+            {!isHiden && <span className='whitespace-nowrap'>{`${remainQuantity} products in stock`}</span>}
         </div>
     )
 }
