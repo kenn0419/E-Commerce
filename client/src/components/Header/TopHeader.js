@@ -39,7 +39,7 @@ const TopHeader = () => {
         }
     }, [message])
     return (
-        <div className='h-[38px] w-full bg-hover flex items-center justify-center'>
+        <div className='py-2 w-full bg-hover flex items-center justify-center'>
             <div className='w-main flex justify-between items-center text-xs text-white'>
                 <span>ORDER ONLINE OR CALL US (+1800) 000 8808</span>
                 {isLoggedIn && current ?

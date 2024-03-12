@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import path from 'ultils/path';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from 'store/user/userSlice';
+import { showCart } from 'store/app/appSlice';
 const Header = () => {
     const dispatch = useDispatch();
     const { current, isLoggedIn } = useSelector(state => state.user);
@@ -12,7 +13,7 @@ const Header = () => {
     const [options, setOptions] = useState(false);
     const handleClickOutOption = (e) => {
         const profile = document.querySelector('#profile');
-        if (!profile.contains(e.target)) {
+        if (!profile?.contains(e.target)) {
             setOptions(false);
         }
     }
@@ -43,9 +44,12 @@ const Header = () => {
                     <span className='font-light'>Online Support 24/7</span>
                 </div>
                 {current && isLoggedIn && <>
-                    <div className='flex items-center gap-2 justify-center px-5 border-r cursor-pointer'>
+                    <div
+                        onClick={() => dispatch(showCart())}
+                        className='flex items-center gap-2 justify-center px-5 border-r cursor-pointer hover:underline'
+                    >
                         <IoBagSharp color='red' size={18} />
-                        <span>0 item</span>
+                        <span>{current.cart.length || 0} item(s)</span>
                     </div>
                     <div
                         className='flex justify-center items-center px-5 gap-1 hover:underline cursor-pointer relative'

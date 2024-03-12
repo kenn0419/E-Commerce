@@ -7,23 +7,57 @@ import { renderStar } from 'ultils/helper';
 import { SelectOption } from '..';
 import icons from 'ultils/icon';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { showModal } from 'store/app/appSlice';
 import { DetailProduct } from 'pages/public';
+import { apiAddIntoCart, apiRemoveProductFromCart } from 'apis';
+import { toast } from 'react-toastify';
+import { getCurrent } from 'store/user/asyncAction';
+import path from 'ultils/path';
+import Swal from 'sweetalert2';
 
 const Product = ({ productData, isNew, pid, normal }) => {
     const dispatch = useDispatch();
+    const { current } = useSelector(state => state.user);
     const navigate = useNavigate();
-    const { FaHeart, FaEye, TiThMenu } = icons;
+    const { FaHeart, FaEye, FaCartArrowDown, BsFillCartCheckFill } = icons;
     const [isShowOptions, setIsShowOptions] = useState(false);
-    const handleOptionsClick = (e, option) => {
+    const handleOptionsClick = async (e, option) => {
         e.stopPropagation();
         if (option === 'QUICK_VIEW') {
             dispatch(showModal({ isShowModal: true, modalChildren: <DetailProduct isQuickView data={{ pid: productData._id, category: productData.category }} /> }));
-        } else if (option === 'MENU') {
-            navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`)
-        } else {
-            // navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`)
+        } else if (option === 'CART') {
+            if (!current) {
+                Swal.fire({
+                    title: 'Oops!!!',
+                    text: 'Please login to add into cart',
+                    showCancelButton: true,
+                    cancelButtonText: 'Cancel',
+                    confirmButtonText: 'Login'
+                }).then(res => {
+                    if (res.isConfirmed) {
+                        navigate(`/${path.LOGIN}`);
+                    }
+                })
+            } else {
+                if (current?.cart?.some(item => item.product === productData._id)) {
+                    const response = await apiRemoveProductFromCart(productData._id);
+                    if (response.success) {
+                        toast.success(response.message);
+                        dispatch(getCurrent())
+                    } else {
+                        toast.error(response.message);
+                    }
+                } else {
+                    const response = await apiAddIntoCart({ pid: productData._id, color: productData.color });
+                    if (response.success) {
+                        toast.success(response.message);
+                        dispatch(getCurrent())
+                    } else {
+                        toast.error(response.message);
+                    }
+                }
+            }
         }
     }
     return (
@@ -34,13 +68,15 @@ const Product = ({ productData, isNew, pid, normal }) => {
                 onMouseEnter={e => setIsShowOptions(true)}
                 onMouseLeave={e => setIsShowOptions(false)}
             >
-                <div className='w-full relative'>
+                <div className='w-full relative cursor-pointer'>
                     {isShowOptions && <div
                         className='absolute bottom-[-10px] z-30 flex justify-center w-full gap-2 animate-slide-top'
                     >
-                        <span onClick={(e) => handleOptionsClick(e, 'QUICK_VIEW')}><SelectOption icon={<FaEye />} /></span>
-                        <span onClick={(e) => handleOptionsClick(e, 'MENU')}><SelectOption icon={<TiThMenu />} /></span>
-                        <span onClick={(e) => handleOptionsClick(e, 'WISHLIST')}><SelectOption icon={<FaHeart />} /></span>
+                        <span title='Quick View' onClick={(e) => handleOptionsClick(e, 'QUICK_VIEW')}><SelectOption icon={<FaEye />} /></span>
+                        <span title='Add Carts' onClick={(e) => handleOptionsClick(e, 'CART')}>
+                            <SelectOption icon={current?.cart?.some(item => item.product === productData._id) ? <BsFillCartCheckFill /> : <FaCartArrowDown />} />
+                        </span>
+                        <span title='Wishlist' onClick={(e) => handleOptionsClick(e, 'WISHLIST')}><SelectOption icon={<FaHeart />} /></span>
                     </div>}
                     <img
                         src={productData?.thumb || no_image}

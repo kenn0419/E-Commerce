@@ -136,7 +136,7 @@ const DetailProduct = ({ isQuickView, data }) => {
                             }
                         }} />
                     </div>
-                    <div className='w-[472px] mt-4'>
+                    {!isQuickView && <div className='w-[472px] mt-4'>
                         {<Slider {...settings}>
                             {currentProduct.images.length === 0 && product?.images?.map((item, index) => (
                                 <div key={index}>
@@ -166,6 +166,7 @@ const DetailProduct = ({ isQuickView, data }) => {
                             ))}
                         </Slider>}
                     </div>
+                    }
                 </div>
                 <div className={clsx('flex flex-col', isQuickView ? 'w-1/2' : 'w-2/5')}>
                     <h3 className='text-[30px] font-semibold'>{formatMoney(currentProduct.price || product.price)}</h3>

@@ -40,7 +40,10 @@ var userSchema = new mongoose.Schema({
                 type: mongoose.Types.ObjectId,
                 ref: 'Product'
             },
-            quantity: Number,
+            quantity: {
+                type: Number,
+                default: 0
+            },
             color: String,
         }
     ],

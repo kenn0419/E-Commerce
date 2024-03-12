@@ -7,6 +7,7 @@ import { FiLogOut } from "react-icons/fi";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
 import { TbFileLike } from "react-icons/tb";
+import { BsFillCartCheckFill } from "react-icons/bs";
 
 const icons = {
     FaPhoneAlt,
@@ -40,6 +41,7 @@ const icons = {
     TbFileLike,
     MdHistoryEdu,
     FaHome,
+    BsFillCartCheckFill,
 }
 
 export default icons
