@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { apiGetProduct, apiGetProducts } from 'apis';
+import { createSearchParams, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { apiAddIntoCart, apiGetProduct, apiGetProducts } from 'apis';
 import { Breadcrumbs, Button, CustomSlider, ExtraInfo, ProductInfo, SelectQuantity } from 'components';
 import Slider from 'react-slick';
 import ReactImageMagnify from 'react-image-magnify';
@@ -8,6 +8,11 @@ import { formatMoney, renderStar } from 'ultils/helper';
 import { extraInfo } from 'ultils/contants';
 import DOMPurify from 'dompurify';
 import clsx from 'clsx';
+import { useDispatch, useSelector } from 'react-redux';
+import Swal from 'sweetalert2';
+import path from 'ultils/path';
+import { toast } from 'react-toastify';
+import { getCurrent } from 'store/user/asyncAction';
 
 const settings = {
     dots: true,
@@ -19,6 +24,10 @@ const settings = {
 
 const DetailProduct = ({ isQuickView, data }) => {
     const params = useParams();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { current } = useSelector(state => state.user);
     const [product, setProduct] = useState({});
     const [quantity, setQuantity] = useState(1);
     const [update, setUpdate] = useState(false);
@@ -78,6 +87,34 @@ const DetailProduct = ({ isQuickView, data }) => {
             setQuantity(prev => +prev + 1);
         }
     }, [quantity])
+    const handleAddIntoCart = async () => {
+        if (!current) {
+            Swal.fire({
+                title: 'Oops!!!',
+                text: 'Please login to add into cart',
+                showCancelButton: true,
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Login'
+            }).then(res => {
+                if (res.isConfirmed) {
+                    navigate({
+                        pathname: `/${path.LOGIN}`,
+                        search: createSearchParams({
+                            redirect: location.pathname,
+                        }).toString()
+                    });
+                }
+            })
+        } else {
+            const response = await apiAddIntoCart({ pid, color: currentProduct.color, quantity });
+            if (response.success) {
+                toast.success(response.message);
+                dispatch(getCurrent())
+            } else {
+                toast.error(response.message);
+            }
+        }
+    }
     useEffect(() => {
         if (variant) {
             setCurrentProduct({
@@ -227,6 +264,7 @@ const DetailProduct = ({ isQuickView, data }) => {
                                 <Button
                                     children='Add to Cart'
                                     fw={'w-full'}
+                                    handleOnClick={handleAddIntoCart}
                                 />
                             </div>
                         </div>

@@ -29,7 +29,10 @@ export const userSlice = createSlice({
         },
         clearMessage: (state, action) => {
             state.message = '';
-        }
+        },
+        // updateCart: (state, action) => {
+
+        // }
     },
     //Code logic xử lý async action
     extraReducers: (builder) => {

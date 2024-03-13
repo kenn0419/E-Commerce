@@ -14,7 +14,7 @@ import path from 'ultils/path';
 const ProductInfo = ({ totalRatings, ratings, nameProduct, pid, reRender }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { isLoggedIn, token } = useSelector(state => state.user);
+    const { isLoggedIn } = useSelector(state => state.user);
     const [activeTab, setActiveTab] = useState(1);
     const handleSubmitVote = async ({ comment, star }) => {
         if (!comment || !pid || !star) {
@@ -88,8 +88,8 @@ const ProductInfo = ({ totalRatings, ratings, nameProduct, pid, reRender }) => {
                             <VoteBar
                                 key={item}
                                 number={item + 1}
-                                ratingCount={ratings?.length}
-                                ratingTotal={ratings?.filter(rating => rating.star === item + 1)?.length}
+                                ratingCount={ratings?.length || 100}
+                                ratingTotal={ratings?.filter(rating => rating.star === item + 1)?.length || 0}
                             />
                         ))}
                     </div>

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { InputField, Button, Loading } from 'components'
 import { apiFinalRegister, apiForgotPassword, apiLogin, apiRegister } from 'apis';
 import Swal from 'sweetalert2'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import path from 'ultils/path';
 import { login } from 'store/user/userSlice';
 import { useDispatch } from 'react-redux';
@@ -13,6 +13,7 @@ import { showModal } from 'store/app/appSlice';
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [params] = useSearchParams();
     const [payload, setPayload] = useState({
         email: '',
         password: '',
@@ -60,7 +61,7 @@ const Login = () => {
                 const response = await apiLogin(data);
                 if (response.success) {
                     dispatch(login({ isLoggedIn: true, token: response.accessToken, current: response.userData }));
-                    navigate(`/${path.HOME}`);
+                    params.get('redirect') ? navigate(params.get('redirect')) : navigate(`/${path.HOME}`);
                     resetPayload();
                 } else {
                     Swal.fire('Oops!', response.message, 'error')
