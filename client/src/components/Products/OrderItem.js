@@ -1,16 +1,17 @@
 import { apiRemoveProductFromCart } from 'apis';
 import SelectQuantity from 'components/Common/SelectQuantity';
-import React, { memo, useCallback, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getCurrent } from 'store/user/asyncAction';
+import { updateCart } from 'store/user/userSlice';
 import { formatMoney } from 'ultils/helper';
 
-const OrderItem = ({ item }) => {
+const OrderItem = ({ item, defaultQuantity = 1 }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [quantity, setQuantity] = useState(1);
+    const [quantity, setQuantity] = useState(defaultQuantity);
     const handleRemove = async (pid) => {
         const response = await apiRemoveProductFromCart(pid);
         if (response.success) {
@@ -35,10 +36,13 @@ const OrderItem = ({ item }) => {
             setQuantity(prev => +prev + 1);
         }
     }, [quantity])
+    useEffect(() => {
+        dispatch(updateCart({ pid: item.product._id, quantity, color: item.color }));
+    }, [quantity])
     return (
         <div className='w-main mx-auto font-bold p-3 grid grid-cols-10 border border-gray-200'>
             <span className='col-span-6 w-full text-center'>
-                <div className='flex gap-6'>
+                <div className='flex gap-6 px-4 py-2'>
                     <img
                         src={item.thumbNail}
                         alt=''
@@ -62,7 +66,7 @@ const OrderItem = ({ item }) => {
                     handleChangeQuantity={handleChangeQuantity}
                 />
             </span>
-            <span className='col-span-3 w-full flex justify-center items-center'>{formatMoney(item.price)}</span>
+            <span className='col-span-3 w-full flex justify-center items-center'>{formatMoney(item.price * quantity)}</span>
         </div>
     )
 }
