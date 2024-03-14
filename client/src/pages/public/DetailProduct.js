@@ -106,7 +106,14 @@ const DetailProduct = ({ isQuickView, data }) => {
                 }
             })
         } else {
-            const response = await apiAddIntoCart({ pid, color: currentProduct.color, quantity });
+            const response = await apiAddIntoCart({
+                pid,
+                quantity,
+                thumbNail: currentProduct.thumb || product.thumb,
+                title: currentProduct.title || product.title,
+                color: currentProduct.color || product.color,
+                price: currentProduct.price || product.price,
+            });
             if (response.success) {
                 toast.success(response.message);
                 dispatch(getCurrent())
@@ -240,7 +247,7 @@ const DetailProduct = ({ isQuickView, data }) => {
                                     </span>
                                 </div>
                                 {product?.variant?.map(item => (
-                                    <div
+                                    <div key={item.sku}
                                         onClick={() => setVariant(item.sku)}
                                         className={clsx('flex items-center gap-2 border p-1 cursor-pointer', variant === item.sku ? 'border-red-500' : ' border-gray-3  00')}
                                     >

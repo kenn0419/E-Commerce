@@ -15,8 +15,8 @@ const Cart = () => {
     const navigate = useNavigate();
     const { IoCloseOutline, FaRegTrashAlt } = icons;
     const { current } = useSelector(state => state.user);
-    const handleRemove = async (pid) => {
-        const response = await apiRemoveProductFromCart(pid);
+    const handleRemove = async (pid, color) => {
+        const response = await apiRemoveProductFromCart(pid, color);
         if (response.success) {
             toast.success(response.message);
             dispatch(getCurrent());
@@ -41,14 +41,14 @@ const Cart = () => {
                 {!current?.cart.length === 0 && <span>Your Cart is Empty</span>}
                 {current?.cart?.map(item => (
                     <div key={item._id} className='flex gap-3 relative'>
-                        <img src={item.product.thumb} alt='' className='w-16 h-16 object-cover' />
+                        <img src={item.thumbNail} alt='' className='w-16 h-16 object-cover' />
                         <div className='flex flex-col gap-1 w-full'>
-                            <span className='font-bold'>{item.product.title}</span>
+                            <span className='font-bold'>{item.title}</span>
                             <span className='uppercase text-sm'>{item.color || 'BLACK'}</span>
-                            <span className='text-sm text-right'>{formatMoney(item.product.price)}</span>
+                            <span className='text-sm text-right'>{formatMoney(item.price)}</span>
                         </div>
                         <span
-                            onClick={() => handleRemove(item.product._id)}
+                            onClick={() => handleRemove(item.product._id, item.color)}
                             className='absolute top-0 right-4 cursor-pointer p-2 hover:bg-gray-300 rounded-full'>
                             <FaRegTrashAlt size={12} color='red' />
                         </span>
@@ -58,7 +58,7 @@ const Cart = () => {
             <div className='row-span-2 flex flex-col justify-between h-full mt-1 pt-2 border-t border-gray-700'>
                 <div className='flex justify-between items-center'>
                     <span className='uppercase text-base font-semibold'>SubTotal:</span>
-                    <span className='uppercase text-base font-semibold'>{formatMoney(current.cart.reduce((prev, value) => prev + value.product.price, 0))}</span>
+                    <span className='uppercase text-base font-semibold'>{formatMoney(current.cart.reduce((prev, value) => prev + value.price, 0))}</span>
                 </div>
                 <span className='block mt-3 text-center italic text-gray-600 font-medium'>Shipping, taxes, and discounts calculated at checkout.</span>
                 <Button fw handleOnClick={() => {

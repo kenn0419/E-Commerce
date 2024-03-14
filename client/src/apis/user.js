@@ -66,7 +66,7 @@ export const apiAddIntoCart = (data) => axios({
     data
 })
 
-export const apiRemoveProductFromCart = (pid) => axios({
-    url: '/user/remove-cart/' + pid,
+export const apiRemoveProductFromCart = (pid, color) => axios({
+    url: `/user/remove-cart/${pid}/${color}`,
     method: 'DELETE',
 })
