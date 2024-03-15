@@ -7,7 +7,7 @@ import path from 'ultils/path';
 
 const DetailCart = () => {
     // const location = useLocation();
-    const { currentCart, current } = useSelector(state => state.user);
+    const { currentCart } = useSelector(state => state.user);
     return (
         <div className='w-full'>
             <div className='h-[81px] bg-gray-100 flex justify-center items-center w-full'>
@@ -22,7 +22,7 @@ const DetailCart = () => {
                     <span className='col-span-1 w-full text-center'>Quantity</span>
                     <span className='col-span-3 w-full text-center'>Price</span>
                 </div>
-                {(currentCart.length > 0 ? currentCart : current.cart).map(item => (
+                {currentCart.map(item => (
                     <OrderItem
                         key={item._id}
                         item={item}
@@ -33,7 +33,7 @@ const DetailCart = () => {
             <div className='w-main mx-auto flex flex-col mb-12 items-end justify-center gap-3'>
                 <span className='flex items-center gap-8 text-base'>
                     <span>Subtotal:</span>
-                    <span className='text-red-500 opacity-80'>{formatMoney((currentCart.length > 0 ? currentCart : current.cart).reduce((prev, value) => prev + value.price * value.quantity, 0))}</span>
+                    <span className='text-red-500 opacity-80'>{formatMoney(currentCart.reduce((prev, value) => prev + value.price * value.quantity, 0))}</span>
                 </span>
                 <span className='block mt-3 text-center italic text-gray-600 font-medium'>Shipping, taxes, and discounts calculated at checkout.</span>
                 <Link

@@ -36,8 +36,7 @@ export const userSlice = createSlice({
             const updatingCart = JSON.parse(JSON.stringify(state.currentCart));
             state.currentCart = updatingCart.map(item => {
                 if (item.color === color && item.product._id === pid) {
-                    item.quantity = quantity;
-                    return item;
+                    return { ...item, quantity };
                 } else {
                     return item;
                 }

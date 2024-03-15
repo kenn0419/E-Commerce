@@ -41,7 +41,6 @@ const OrderItem = ({ item, defaultQuantity = 1 }) => {
     useEffect(() => {
         dispatch(updateCart({ pid: item.product._id, quantity, color: item.color }));
     }, [quantity])
-    console.log(quantity, current);
     return (
         <div className='w-main mx-auto font-bold p-3 grid grid-cols-10 border border-gray-200'>
             <span className='col-span-6 w-full text-center'>
