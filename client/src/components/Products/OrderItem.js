@@ -1,7 +1,8 @@
+import { current } from '@reduxjs/toolkit';
 import { apiRemoveProductFromCart } from 'apis';
 import SelectQuantity from 'components/Common/SelectQuantity';
 import React, { memo, useCallback, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getCurrent } from 'store/user/asyncAction';
@@ -10,6 +11,7 @@ import { formatMoney } from 'ultils/helper';
 
 const OrderItem = ({ item, defaultQuantity = 1 }) => {
     const navigate = useNavigate();
+    const { current } = useSelector(state => state.user);
     const dispatch = useDispatch();
     const [quantity, setQuantity] = useState(defaultQuantity);
     const handleRemove = async (pid) => {
@@ -39,6 +41,7 @@ const OrderItem = ({ item, defaultQuantity = 1 }) => {
     useEffect(() => {
         dispatch(updateCart({ pid: item.product._id, quantity, color: item.color }));
     }, [quantity])
+    console.log(quantity, current);
     return (
         <div className='w-main mx-auto font-bold p-3 grid grid-cols-10 border border-gray-200'>
             <span className='col-span-6 w-full text-center'>

@@ -49,7 +49,13 @@ const Product = ({ productData, isNew, pid, normal }) => {
                         toast.error(response.message);
                     }
                 } else {
-                    const response = await apiAddIntoCart({ pid: productData._id, color: productData.color });
+                    const response = await apiAddIntoCart({
+                        pid: productData._id,
+                        color: productData.color,
+                        title: productData.title,
+                        thumbNail: productData.thumb,
+                        price: productData.price
+                    });
                     if (response.success) {
                         toast.success(response.message);
                         dispatch(getCurrent())

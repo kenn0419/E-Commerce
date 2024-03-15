@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { createSearchParams, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { apiAddIntoCart, apiGetProduct, apiGetProducts } from 'apis';
 import { Breadcrumbs, Button, CustomSlider, ExtraInfo, ProductInfo, SelectQuantity } from 'components';
@@ -16,13 +16,14 @@ import { getCurrent } from 'store/user/asyncAction';
 
 const settings = {
     dots: true,
-    infinite: false,
+    infinite: true,
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1
 };
 
 const DetailProduct = ({ isQuickView, data }) => {
+    const titleRef = useRef();
     const params = useParams();
     const location = useLocation();
     const navigate = useNavigate();
@@ -146,7 +147,10 @@ const DetailProduct = ({ isQuickView, data }) => {
             fetchDetailProduct();
             fetchRelativeProducts();
         }
-    }, [pid])
+        titleRef.current.scrollIntoView({
+            block: 'center',
+        })
+    }, [pid, params.pid])
     useEffect(() => {
         if (pid) {
             fetchDetailProduct();
@@ -155,7 +159,7 @@ const DetailProduct = ({ isQuickView, data }) => {
     }, [update])
     return (
         <div className={clsx('w-full')}>
-            {!isQuickView && <div className='h-[81px] bg-gray-100 flex justify-center items-center'>
+            {!isQuickView && <div ref={titleRef} className='h-[81px] bg-gray-100 flex justify-center items-center'>
                 <div className='w-main'>
                     <h3 className='font-semibold uppercase'>{currentProduct.title || product.title}</h3>
                     <Breadcrumbs title={currentProduct.title || product.title} category={category} />

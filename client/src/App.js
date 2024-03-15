@@ -8,7 +8,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Cart, Modal } from 'components';
 import { AdminLayout, CreateProduct, Dashboard, ManageOder, ManageProduct, ManageUser } from 'pages/admin';
-import { History, MemberLayout, MyCart, Personal, WishList } from 'pages/member';
+import { Checkout, History, MemberLayout, MyCart, Personal, WishList } from 'pages/member';
 import { showCart } from 'store/app/appSlice';
 
 function App() {
@@ -34,7 +34,6 @@ function App() {
           <Route path={path.OUR_SERVICES} element={<Service />} />
           <Route path={path.FAQ} element={<FAQ />} />
           <Route path={path.PRODUCTS} element={<Products />} />
-          <Route path={path.DETAIL_CART} element={<DetailCart />} />
           <Route path={path.ALL} element={<Home />} />
         </Route>
         <Route path={path.ADMIN} element={<AdminLayout />}>
@@ -46,10 +45,11 @@ function App() {
         </Route>
         <Route path={path.MEMBER} element={<MemberLayout />}>
           <Route path={path.PERSONAL} element={<Personal />} />
-          <Route path={path.MYCART} element={<MyCart />} />
+          <Route path={path.MY_CART} element={<DetailCart />} />
           <Route path={path.WISHLIST} element={<WishList />} />
           <Route path={path.HISTORY} element={<History />} />
         </Route>
+        <Route path={path.CHECKOUT} element={<Checkout />} />
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />
         <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
         <Route path={path.LOGIN} element={<Login />} />

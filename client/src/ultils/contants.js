@@ -235,7 +235,7 @@ export const memberSidebar = [
         id: 2,
         text: 'My Cart',
         type: 'SINGLE',
-        path: `/${path.MEMBER}/${path.MYCART}`,
+        path: `/${path.MEMBER}/${path.MY_CART}`,
         icon: icons.FaCartArrowDown
     },
     {

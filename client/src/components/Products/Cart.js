@@ -15,7 +15,6 @@ const Cart = () => {
     const navigate = useNavigate();
     const { IoCloseOutline, FaRegTrashAlt } = icons;
     const { currentCart } = useSelector(state => state.user);
-    console.log(currentCart);
     const handleRemove = async (pid, color) => {
         const response = await apiRemoveProductFromCart(pid, color);
         if (response.success) {
@@ -65,7 +64,7 @@ const Cart = () => {
                 <span className='block mt-3 text-center italic text-gray-600 font-medium'>Shipping, taxes, and discounts calculated at checkout.</span>
                 <Button fw handleOnClick={() => {
                     dispatch(showCart());
-                    navigate(`/${path.DETAIL_CART}`);
+                    navigate(`/${path.MEMBER}/${path.MY_CART}`);
                 }}>
                     SHOPPING CART
                 </Button>
