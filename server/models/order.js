@@ -8,8 +8,14 @@ var orderSchema = new mongoose.Schema({
                 type: mongoose.Types.ObjectId,
                 ref: 'Product'
             },
-            count: Number,
-            color: String
+            quantity: {
+                type: Number,
+                default: 0
+            },
+            color: String,
+            price: Number,
+            thumbNail: String,
+            title: String
         }
     ],
     status: {
@@ -20,10 +26,6 @@ var orderSchema = new mongoose.Schema({
     total: {
         type: Number,
         default: 0
-    },
-    coupon: {
-        type: mongoose.Types.ObjectId,
-        ref: 'Coupon'
     },
     orderBy: {
         type: mongoose.Types.ObjectId,
