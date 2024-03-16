@@ -11,7 +11,7 @@ const InputForm = ({ label, disabled, register, errors, id, validate, type = 'te
                 {...register(id, validate)}
                 disabled={disabled}
                 placeholder={placeholder}
-                className={clsx(' px-2 py-2 text-sm rounded-lg  outline-none border border-gray-600 my-auto', fullWidth && 'w-full', disabled ? 'bg-gray-200' : 'bg-white')}
+                className={clsx(' px-2 py-2 text-sm rounded-lg  outline-none border border-gray-400 my-auto', fullWidth && 'w-full', disabled ? 'bg-gray-200' : 'bg-white')}
                 defaultValue={defaultValue}
                 readOnly={readOnly}
             />

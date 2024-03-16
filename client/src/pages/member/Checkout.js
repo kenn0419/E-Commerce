@@ -10,7 +10,9 @@ const Checkout = () => {
     const dispatch = useDispatch();
     const { currentCart, isSuccess, current } = useSelector(state => state.user);
     useEffect(() => {
-        dispatch(getCurrent());
+        if (isSuccess) {
+            dispatch(getCurrent());
+        }
     }, [isSuccess])
     return (
         <div className='w-full p-8 grid grid-cols-10 h-full max-h-screen overflow-y-auto gap-6'>

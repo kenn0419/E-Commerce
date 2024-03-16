@@ -5,14 +5,17 @@ import { Link, createSearchParams, useLocation, useNavigate } from 'react-router
 import { formatMoney } from 'ultils/helper';
 import path from 'ultils/path';
 import Swal from 'sweetalert2';
+import { getCurrent } from 'store/user/asyncAction';
 
 const DetailCart = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
     const { currentCart, isSuccess, current } = useSelector(state => state.user);
+    console.log(isSuccess);
     useEffect(() => {
         if (isSuccess) {
-            navigate(`/${path.HOME}`);
+            dispatch(getCurrent());
         }
     }, [isSuccess])
     const handleSubmit = () => {
@@ -41,7 +44,7 @@ const DetailCart = () => {
                     <h3 className='font-semibold tracking-tighter text-3xl pb-3 border-b border-red-500'>My Cart</h3>
                 </div>
             </div>
-            {currentCart ? <div className='my-8'>
+            {currentCart.length > 0 ? <div className='my-8'>
                 <div className='w-main mx-auto font-bold py-3 grid grid-cols-10 border border-gray-200 bg-gray-400 text-white'>
                     <span className='col-span-6 w-full text-center'></span>
                     <span className='col-span-1 w-full text-center'>Quantity</span>
@@ -54,7 +57,7 @@ const DetailCart = () => {
                         defaultQuantity={item.quantity}
                     />
                 ))}
-            </div> : <span className='text-3xl text-center text-main'>no products in the cart yet</span>}
+            </div> : <span className='text-2xl text-center text-main p-6 capitalize'>no products in the cart yet</span>}
             <div className='w-main mx-auto flex flex-col mb-12 items-end justify-center gap-3'>
                 <span className='flex items-center gap-8 text-base'>
                     <span>Subtotal:</span>

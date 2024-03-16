@@ -7,8 +7,6 @@ import {
 import { apiCreateOrder } from "apis";
 import { memo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { getCurrent } from "store/user/asyncAction";
 import { showConfetti } from "store/user/userSlice";
 import Swal from "sweetalert2";
 
