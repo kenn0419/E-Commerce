@@ -38,4 +38,5 @@ export { default as QuickView } from './Products/QuickView';
 export { default as Cart } from './Products/Cart';
 export { default as OrderItem } from './Products/OrderItem';
 export { default as Paypal } from './Common/Paypal';
+export { default as Congratulation } from './Common/Congratulation';
 

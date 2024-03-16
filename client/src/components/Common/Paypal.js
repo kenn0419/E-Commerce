@@ -4,22 +4,40 @@ import {
     PayPalButtons,
     usePayPalScriptReducer
 } from "@paypal/react-paypal-js";
+import { apiCreateOrder } from "apis";
 import { memo, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { getCurrent } from "store/user/asyncAction";
+import { showConfetti } from "store/user/userSlice";
+import Swal from "sweetalert2";
 
 // This value is from the props in the UI
 const style = { "layout": "vertical" };
 
 // Custom component to wrap the PayPalButtons and show loading spinner
-const ButtonWrapper = ({ currency, showSpinner, amount }) => {
-    const [{ isPending, options, dispatch }] = usePayPalScriptReducer();
+const ButtonWrapper = ({ currency, showSpinner, amount, payload }) => {
+    const dispatch = useDispatch();
+    const [{ isPending, options, dispatch: shoot }] = usePayPalScriptReducer();
     useEffect(() => {
-        dispatch({
+        shoot({
             type: 'resetOptions',
             value: {
                 ...options, currency
             }
         })
     }, [currency, showSpinner])
+    const handleCreateOrder = async () => {
+        const response = await apiCreateOrder({ ...payload, status: 'Succeed' });
+        if (response.success) {
+            dispatch(showConfetti());
+            setTimeout(() => {
+                Swal.fire('Congratulations', 'Order was created', 'success').then(() => {
+                    window.close();
+                })
+            }, 200);
+        }
+    }
     return (
         <>
             {(showSpinner && isPending) && <div className="spinner" />}
@@ -35,7 +53,7 @@ const ButtonWrapper = ({ currency, showSpinner, amount }) => {
                 }).then(orderId => orderId)}
                 onApprove={(data, actions) => actions.order.capture().then(async (response) => {
                     if (response.status === 'COMPLETED') {
-                        console.log(response);
+                        await handleCreateOrder();
                     }
                 })}
             />
@@ -43,11 +61,11 @@ const ButtonWrapper = ({ currency, showSpinner, amount }) => {
     );
 }
 
-const Paypal = ({ amount }) => {
+const Paypal = ({ amount, payload }) => {
     return (
         <div style={{ maxWidth: "750px", minHeight: "200px", margin: 'auto' }}>
             <PayPalScriptProvider options={{ clientId: "test", components: "buttons", currency: "USD" }}>
-                <ButtonWrapper currency={'USD'} amount={amount} showSpinner={false} />
+                <ButtonWrapper payload={payload} currency={'USD'} amount={amount} showSpinner={false} />
             </PayPalScriptProvider>
         </div>
     );

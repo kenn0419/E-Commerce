@@ -1,16 +1,29 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import shopping from 'assets/shopping.gif'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { formatMoney } from 'ultils/helper';
-import { InputForm, Paypal } from 'components';
+import { Congratulation, InputForm, Paypal } from 'components';
 import { useForm } from 'react-hook-form';
+import { getCurrent } from 'store/user/asyncAction';
+import { useNavigate } from 'react-router-dom';
+import path from 'ultils/path';
 
 
 const Checkout = () => {
-    const { currentCart } = useSelector(state => state.user);
-    const { register, handleSubmit, formState: { errors }, reset, watch } = useForm();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { currentCart, current, isSuccess } = useSelector(state => state.user);
+    const { register, formState: { errors }, watch, setValue } = useForm();
+    const address = watch('address');
+    useEffect(() => {
+        setValue('address', current.address);
+    }, [current.address])
+    useEffect(() => {
+        dispatch(getCurrent());
+    }, [isSuccess])
     return (
         <div className='w-full p-8 grid grid-cols-10 h-full max-h-screen overflow-y-auto gap-6'>
+            {isSuccess && <Congratulation />}
             <div className='w-full flex items-center justify-center col-span-4'>
                 <img src={shopping} alt='' className='h-[80%] object-contain' />
             </div>
@@ -37,7 +50,7 @@ const Checkout = () => {
                             ))}
                         </tbody>
                     </table>
-                    <div className='flex-1 flex flex-col justify-between gap-[45px]'>
+                    <div className='flex-1 flex flex-col justify-between gap-[40px]'>
                         <span className='flex items-center gap-8 text-base'>
                             <span className='font-medium'>Subtotal:</span>
                             <span className='text-red-500 font-semibold opacity-80'>{formatMoney(currentCart.reduce((prev, value) => prev + value.price * value.quantity, 0))}</span>
@@ -52,11 +65,18 @@ const Checkout = () => {
                             }}
                             style={`text-sm`}
                             fullWidth
-                            placeholder='Your address....'
+                            placeholder='Fill your address....'
                         />
-                        <div className='w-full'>
-                            <Paypal amount={Math.round(currentCart.reduce((prev, value) => prev + value.price * value.quantity, 0) / 24720)} />
-                        </div>
+                        {address && address.length > 10 && <div className='w-full'>
+                            <Paypal
+                                payload={{
+                                    address,
+                                    products: currentCart,
+                                    total: currentCart.reduce((prev, value) => prev + value.price * value.quantity, 0),
+                                }}
+                                amount={Math.round(currentCart.reduce((prev, value) => prev + value.price * value.quantity, 0) / 24720)}
+                            />
+                        </div>}
                     </div>
                 </div>
             </div>

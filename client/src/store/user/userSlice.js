@@ -12,6 +12,7 @@ export const userSlice = createSlice({
         isLoading: false,
         message: '',
         currentCart: [],
+        isSuccess: false,
     },
     //Code logic xử lý action thông thường
     reducers: {
@@ -41,6 +42,9 @@ export const userSlice = createSlice({
                     return item;
                 }
             });
+        },
+        showConfetti: (state) => {
+            state.isSuccess = state.isSuccess ? false : true;
         }
     },
     //Code logic xử lý async action
@@ -70,6 +74,6 @@ export const userSlice = createSlice({
     },
 })
 
-export const { login, logout, clearMessage, updateCart } = userSlice.actions
+export const { login, logout, clearMessage, updateCart, showConfetti } = userSlice.actions
 
 export default userSlice.reducer
