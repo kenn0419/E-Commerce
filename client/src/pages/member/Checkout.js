@@ -1,23 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import shopping from 'assets/shopping.gif'
 import { useDispatch, useSelector } from 'react-redux'
 import { formatMoney } from 'ultils/helper';
-import { Congratulation, InputForm, Paypal } from 'components';
-import { useForm } from 'react-hook-form';
+import { Congratulation, Paypal } from 'components';
 import { getCurrent } from 'store/user/asyncAction';
-import { useNavigate } from 'react-router-dom';
-import path from 'ultils/path';
 
 
 const Checkout = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const { currentCart, current, isSuccess } = useSelector(state => state.user);
-    const { register, formState: { errors }, watch, setValue } = useForm();
-    const address = watch('address');
-    useEffect(() => {
-        setValue('address', current.address);
-    }, [current.address])
+    const { currentCart, isSuccess, current } = useSelector(state => state.user);
     useEffect(() => {
         dispatch(getCurrent());
     }, [isSuccess])
@@ -30,53 +21,47 @@ const Checkout = () => {
             <div className='flex flex-col justify-center gap-6 col-span-6'>
                 <h2 className='text-2xl mb-6 font-bold capitalize'>Checkout your order</h2>
                 <div className='flex gap-6'>
-                    <table className='table-auto flex-1'>
-                        <thead>
-                            <tr className='border bg-sky-500'>
-                                <th className='text-center p-1 text-white'>Products</th>
-                                <th className='text-center p-1 text-white'>Color</th>
-                                <th className='text-center p-1 text-white'>Quantity</th>
-                                <th className='text-center p-1 text-white'>Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentCart.map(item => (
-                                <tr key={item._id}>
-                                    <td className='text-[13px] border'>{item.title}</td>
-                                    <td className='text-[13px] border'>{item.color}</td>
-                                    <td className='text-[13px] text-center border'>{item.quantity}</td>
-                                    <td className='text-[13px] text-right border'>{formatMoney(item.price * item.quantity)}</td>
+                    <div className='flex-1'>
+                        <table className='table-auto flex-1 h-fit'>
+                            <thead>
+                                <tr className='border bg-sky-500'>
+                                    <th className='text-center p-1 text-white'>Products</th>
+                                    <th className='text-center p-1 text-white'>Color</th>
+                                    <th className='text-center p-1 text-white'>Quantity</th>
+                                    <th className='text-center p-1 text-white'>Price</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {currentCart.map(item => (
+                                    <tr key={item._id}>
+                                        <td className='text-sm py-2 uppercase border'>{item.title}</td>
+                                        <td className='text-sm py-2 uppercase border'>{item.color}</td>
+                                        <td className='text-sm py-2 uppercase text-center border'>{item.quantity}</td>
+                                        <td className='text-sm py-2 uppercase text-right border'>{formatMoney(item.price * item.quantity)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                     <div className='flex-1 flex flex-col justify-between gap-[40px]'>
                         <span className='flex items-center gap-8 text-base'>
                             <span className='font-medium'>Subtotal:</span>
                             <span className='text-red-500 font-semibold opacity-80'>{formatMoney(currentCart.reduce((prev, value) => prev + value.price * value.quantity, 0))}</span>
                         </span>
-                        <InputForm
-                            label='Address'
-                            register={register}
-                            errors={errors}
-                            id='address'
-                            validate={{
-                                required: 'Require fill this field',
-                            }}
-                            style={`text-sm`}
-                            fullWidth
-                            placeholder='Fill your address....'
-                        />
-                        {address && address.length > 10 && <div className='w-full'>
+                        <span className='flex items-center gap-8 text-base'>
+                            <span className='font-medium'>Address:</span>
+                            <span className='text-sky-400 font-semibold opacity-80'>{current.address}</span>
+                        </span>
+                        <div className='w-full'>
                             <Paypal
                                 payload={{
-                                    address,
+                                    address: current.address,
                                     products: currentCart,
                                     total: currentCart.reduce((prev, value) => prev + value.price * value.quantity, 0),
                                 }}
                                 amount={Math.round(currentCart.reduce((prev, value) => prev + value.price * value.quantity, 0) / 24720)}
                             />
-                        </div>}
+                        </div>
                     </div>
                 </div>
             </div>

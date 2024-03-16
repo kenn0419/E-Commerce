@@ -1,18 +1,39 @@
 import React, { useEffect } from 'react'
-import { OrderItem } from 'components';
+import { Button, OrderItem } from 'components';
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, createSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import { formatMoney } from 'ultils/helper';
 import path from 'ultils/path';
+import Swal from 'sweetalert2';
 
 const DetailCart = () => {
     const navigate = useNavigate();
-    const { currentCart, isSuccess } = useSelector(state => state.user);
+    const location = useLocation();
+    const { currentCart, isSuccess, current } = useSelector(state => state.user);
     useEffect(() => {
         if (isSuccess) {
             navigate(`/${path.HOME}`);
         }
     }, [isSuccess])
+    const handleSubmit = () => {
+        if (current.address.length === 0) {
+            return Swal.fire({
+                icon: 'info',
+                title: 'Oopss!!!',
+                text: 'Please provide your address before order these products',
+                showCancelButton: true,
+            }).then(res => {
+                if (res.isConfirmed) {
+                    navigate({
+                        pathname: `/${path.MEMBER}/${path.PERSONAL}`,
+                        search: createSearchParams({ redirect: location.pathname }).toString()
+                    })
+                }
+            })
+        } else {
+            window.open(`/${path.CHECKOUT}`)
+        }
+    }
     return (
         <div className='w-full'>
             <div className='h-[81px] bg-gray-100 flex justify-center items-center w-full'>
@@ -40,13 +61,7 @@ const DetailCart = () => {
                     <span className='text-red-500 opacity-80'>{formatMoney(currentCart.reduce((prev, value) => prev + value.price * value.quantity, 0))}</span>
                 </span>
                 <span className='block mt-3 text-center italic text-gray-600 font-medium'>Shipping, taxes, and discounts calculated at checkout.</span>
-                <Link
-                    target='_blank'
-                    to={`/${path.CHECKOUT}`}
-                    className='px-3 py-1 bg-main text-white hover:bg-red-800'
-                >
-                    Checkout
-                </Link>
+                <Button handleOnClick={handleSubmit}>Checkout</Button>
             </div>
         </div>
     )

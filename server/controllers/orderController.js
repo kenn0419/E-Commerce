@@ -5,9 +5,11 @@ const asyncHandler = require('express-async-handler');
 
 const createOrder = asyncHandler(async (req, res) => {
     const { _id } = req.user;
-    const { product, total } = req.body;
-
-    const response = await Order.create({ product, total, orderBy: _id });
+    const { products, total, address, status } = req.body;
+    if (address) {
+        await User.findByIdAndUpdate(_id, { address, cart: [] }, { new: true });
+    }
+    const response = await Order.create({ products, total, status, orderBy: _id });
     return res.json({
         success: response ? true : false,
         message: response ? 'Create order successfully' : 'Something went wrong',

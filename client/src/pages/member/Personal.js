@@ -8,9 +8,12 @@ import { apiUpdateCurrent } from 'apis';
 import { getCurrent } from 'store/user/asyncAction';
 import { toast } from 'react-toastify';
 import { getBase64 } from 'ultils/helper';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const Personal = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [params] = useSearchParams();
     const { current } = useSelector(state => state.user);
     const [preview, setPreview] = useState({
         avatar: '',
@@ -22,6 +25,7 @@ const Personal = () => {
             lastname: current.lastname,
             email: current.email,
             mobile: current.mobile,
+            address: current.address,
         })
     }, [current])
     const handlePreview = async (file) => {
@@ -50,6 +54,9 @@ const Personal = () => {
         if (response.success) {
             dispatch(getCurrent());
             toast.success(response.message);
+            if (params.get('redirect')) {
+                navigate(params.get('redirect'))
+            }
         } else {
             toast.error(response.message);
         }
@@ -109,6 +116,17 @@ const Personal = () => {
                     }}
                     fullWidth
                     placeholder='Enter your phone number'
+                />
+                <InputForm
+                    label='Address'
+                    register={register}
+                    errors={errors}
+                    id='address'
+                    validate={{
+                        required: 'Require fill this field',
+                    }}
+                    fullWidth
+                    placeholder='Enter your address'
                 />
                 <div className='flex items-center gap-1'>
                     <span className='font-semibold'>Account Status: </span>
