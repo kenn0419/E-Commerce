@@ -10,12 +10,12 @@ import { updateCart } from 'store/user/userSlice';
 import { formatMoney } from 'ultils/helper';
 
 const OrderItem = ({ item, defaultQuantity = 1 }) => {
+    console.log(item);
     const navigate = useNavigate();
-    const { current } = useSelector(state => state.user);
     const dispatch = useDispatch();
     const [quantity, setQuantity] = useState(defaultQuantity);
-    const handleRemove = async (pid) => {
-        const response = await apiRemoveProductFromCart(pid);
+    const handleRemove = async (pid, color) => {
+        const response = await apiRemoveProductFromCart(pid, color);
         if (response.success) {
             toast.success(response.message);
             dispatch(getCurrent());
@@ -54,7 +54,7 @@ const OrderItem = ({ item, defaultQuantity = 1 }) => {
                     <div className='flex flex-col items-start gap-3'>
                         <span className='font-bold text-red-500'>{item.title}</span>
                         <span className='uppercase text-sm font-main'>{item.color || 'BLACK'}</span>
-                        <span onClick={() => handleRemove(item.product._id)} className='text-xs font-normal text-gray-500 cursor-pointer hover:text-red-500'>
+                        <span onClick={() => handleRemove(item.product._id, item.color)} className='text-xs font-normal text-gray-500 cursor-pointer hover:text-red-500'>
                             Remove
                         </span>
                     </div>

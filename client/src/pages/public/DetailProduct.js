@@ -147,7 +147,7 @@ const DetailProduct = ({ isQuickView, data }) => {
             fetchDetailProduct();
             fetchRelativeProducts();
         }
-        titleRef.current.scrollIntoView({
+        titleRef?.current?.scrollIntoView({
             block: 'center',
         })
     }, [pid, params.pid])

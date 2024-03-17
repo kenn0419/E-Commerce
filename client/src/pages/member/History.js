@@ -42,9 +42,8 @@ const History = () => {
         const param = Object.fromEntries([...params]);
         fetchApiOrders(param);
     }, [params])
-    console.log(status);
     return (
-        <div className='w-full'>
+        <div className='w-full pl-16'>
             <h1 className='h-[75px] flex justify-between items-center text-3xl font-semibold px-4 border-b border-gray-400'>
                 <span>History</span>
             </h1>
@@ -77,18 +76,25 @@ const History = () => {
                             <th>Total</th>
                             <th>Status</th>
                             <th>Created At</th>
-                            <th>Actions</th>
+                            {/* <th>Actions</th> */}
                         </tr>
                     </thead>
                     <tbody>
                         {orders?.map((order, index) => (
                             <tr className='border-b border-gray-300' key={order._id}>
                                 <td className='py-2 px-2'>{((params.get('page') > 1 ? params.get('page') - 1 : 0) * process.env.REACT_APP_LIMIT) + index + 1}</td>
-                                <td className='py-2 px-5'>
-                                    <span className='flex flex-col gap-2'>
+                                <td className='py-2 px-2'>
+                                    <span className='grid grid-cols-4 gap-2'>
                                         {order.products.map(item => (
-                                            <span key={item._id} className='text-sm'>
-                                                {`${item.title} - ${item.color}`}
+                                            <span key={item._id} className='col-span-1 flex gap-2 items-center'>
+                                                <img src={item.thumbNail} alt='' className='w-8 h-8 rounded-md object-cover' />
+                                                <span className='flex flex-col'>
+                                                    <span className='text-hover text-xs'>{item.title}</span>
+                                                    <span className='text-xs'>
+                                                        <span>Quantity:</span>
+                                                        <span className='text-sky-500'>{item.quantity}</span>
+                                                    </span>
+                                                </span>
                                             </span>
                                         ))}
                                     </span>
@@ -96,7 +102,7 @@ const History = () => {
                                 <td className='py-2 px-2 text-center'>{formatMoney(order.total)}</td>
                                 <td className='py-2 px-2 text-center'>{order.status}</td>
                                 <td className='py-2 px-2 text-center'>{moment(order.createdAt).format('DD/MM/YYYY')}</td>
-                                <td className='py-2 px-2'>
+                                {/* <td className='py-2 px-2'>
                                     <div className='flex gap-2 items-center justify-end'>
                                         <span
                                             className='cursor-pointer hover:underline hover:text-yellow-500 text-blue-500'
@@ -109,7 +115,7 @@ const History = () => {
                                             <FaRegTrashAlt />
                                         </span>
                                     </div>
-                                </td>
+                                </td> */}
                             </tr>
                         ))}
                     </tbody>

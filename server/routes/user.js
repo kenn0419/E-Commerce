@@ -17,6 +17,7 @@ router.put('/current', [verifyAccessToken], uploader.single('avatar'), userContr
 router.put('/add-cart', [verifyAccessToken], userController.addIntoCart);
 router.delete('/remove-cart/:pid/:color', [verifyAccessToken], userController.removeProductFromCart);
 router.put('/update-address', [verifyAccessToken], userController.updateAddressUser);
+router.put('/wishlist/:pid', [verifyAccessToken], userController.updateWishList);
 router.put('/:uid', [verifyAccessToken, isAdmin], userController.updateUserByAdmin);
 
 module.exports = router;

@@ -4,19 +4,20 @@ import label from 'assets/new.png';
 import trending from 'assets/trending.png';
 import { formatMoney } from 'ultils/helper';
 import { renderStar } from 'ultils/helper';
-import { SelectOption } from '..';
+import { Button, SelectOption } from '..';
 import icons from 'ultils/icon';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { showModal } from 'store/app/appSlice';
 import { DetailProduct } from 'pages/public';
-import { apiAddIntoCart, apiRemoveProductFromCart } from 'apis';
+import { apiAddIntoCart, apiRemoveProductFromCart, apiUpdateWishList } from 'apis';
 import { toast } from 'react-toastify';
 import { getCurrent } from 'store/user/asyncAction';
 import path from 'ultils/path';
 import Swal from 'sweetalert2';
+import clsx from 'clsx';
 
-const Product = ({ productData, isNew, pid, normal }) => {
+const Product = ({ productData, isNew, pid, normal, className }) => {
     const dispatch = useDispatch();
     const { current } = useSelector(state => state.user);
     const navigate = useNavigate();
@@ -25,7 +26,10 @@ const Product = ({ productData, isNew, pid, normal }) => {
     const handleOptionsClick = async (e, option) => {
         e.stopPropagation();
         if (option === 'QUICK_VIEW') {
-            dispatch(showModal({ isShowModal: true, modalChildren: <DetailProduct isQuickView data={{ pid: productData._id, category: productData.category }} /> }));
+            dispatch(showModal({
+                isShowModal: true,
+                modalChildren: <DetailProduct isQuickView data={{ pid: productData._id, category: productData.category }} />
+            }));
         } else if (option === 'CART') {
             if (!current) {
                 Swal.fire({
@@ -64,10 +68,18 @@ const Product = ({ productData, isNew, pid, normal }) => {
                     }
                 }
             }
+        } else {
+            const response = await apiUpdateWishList(productData._id);
+            if (response.success) {
+                dispatch(getCurrent());
+                toast.success(response.message);
+            } else {
+                toast.error(response.message);
+            }
         }
     }
     return (
-        <div className='w-full text-base px-[10px]'>
+        <div className={clsx('w-full text-base px-[10px]', className)}>
             <div
                 className='w-full border p-[15px] flex flex-col items-center gap-2'
                 onClick={() => navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`)}
@@ -78,11 +90,16 @@ const Product = ({ productData, isNew, pid, normal }) => {
                     {isShowOptions && <div
                         className='absolute bottom-[-10px] z-30 flex justify-center w-full gap-2 animate-slide-top'
                     >
-                        <span title='Quick View' onClick={(e) => handleOptionsClick(e, 'QUICK_VIEW')}><SelectOption icon={<FaEye />} /></span>
+                        <span title='Quick View' onClick={(e) => handleOptionsClick(e, 'QUICK_VIEW')}>
+                            <SelectOption icon={<FaEye />} />
+                        </span>
                         <span title='Add Carts' onClick={(e) => handleOptionsClick(e, 'CART')}>
                             <SelectOption icon={current?.cart?.some(item => item.product._id === productData._id) ? <BsFillCartCheckFill /> : <FaCartArrowDown />} />
                         </span>
-                        <span title='Wishlist' onClick={(e) => handleOptionsClick(e, 'WISHLIST')}><SelectOption icon={<FaHeart />} /></span>
+                        <span title='Wishlist' onClick={(e) => handleOptionsClick(e, 'WISHLIST')}>
+                            <SelectOption icon={<FaHeart color={current?.wishList?.some(item => item._id === productData._id) ? 'red' : 'gray'} />} />
+                        </span>
+
                     </div>}
                     <img
                         src={productData?.thumb || no_image}
@@ -97,7 +114,7 @@ const Product = ({ productData, isNew, pid, normal }) => {
                     <span className=''>{formatMoney(productData.price)}</span>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

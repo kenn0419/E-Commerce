@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Breadcrumbs, Pagination, Product, SearchItem, SelectField } from 'components';
 import { apiGetProducts } from 'apis';
@@ -14,6 +14,7 @@ const breakpointColumnsObj = {
 
 const Products = () => {
     const navigate = useNavigate();
+    const titleRef = useRef();
     const { category } = useParams();
     const [params] = useSearchParams();
     const [products, setProducts] = useState([]);
@@ -27,6 +28,7 @@ const Products = () => {
         if (response.success) {
             setProducts(response);
         }
+        titleRef?.current?.scrollIntoView({ block: 'center' })
     }
     const handleChangeActiveFilter = useCallback((name) => {
         if (name === activeClick) {
@@ -59,7 +61,7 @@ const Products = () => {
         }
         delete queries.from;
         delete queries.to;
-        fetchApiProductsByCategory({ ...priceQuery, ...queries });
+        fetchApiProductsByCategory({ ...queries, ...priceQuery });
         window.scrollTo(0, 0);
     }, [params])
     useEffect(() => {
@@ -68,12 +70,10 @@ const Products = () => {
                 pathname: `/${category}`,
                 search: createSearchParams({ sort }).toString(),
             })
-        } else {
-            navigate(`/${category}`);
         }
     }, [sort])
     return (
-        <div className='w-full'>
+        <div className='w-full' ref={titleRef}>
             <div className='h-[81px] bg-gray-100 flex flex-col justify-center items-center'>
                 <div className='w-main'>
                     <h3 className='font-semibold uppercase'>{category}</h3>

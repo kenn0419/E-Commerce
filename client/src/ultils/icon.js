@@ -1,4 +1,4 @@
-import { FaPhoneAlt, FaUser, FaRegStar, FaHeart, FaEye, FaHome, FaShieldAlt, FaTruck, FaGift, FaReply, FaTty, FaProductHunt, FaRegTrashAlt, FaEdit, FaCartArrowDown } from "react-icons/fa";
+import { FaPhoneAlt, FaRegHeart, FaUser, FaRegStar, FaHeart, FaEye, FaHome, FaShieldAlt, FaTruck, FaGift, FaReply, FaTty, FaProductHunt, FaRegTrashAlt, FaEdit, FaCartArrowDown } from "react-icons/fa";
 import { MdEmail, MdOutlineKeyboardArrowRight, MdLocationOn, MdDashboard, MdGroup, MdOutlineProductionQuantityLimits, MdOutlineBroadcastOnPersonal, MdHistoryEdu } from "react-icons/md";
 import { IoBagSharp, IoCloseOutline } from "react-icons/io5";
 import { FaStar } from "react-icons/fa6";
@@ -42,6 +42,7 @@ const icons = {
     MdHistoryEdu,
     FaHome,
     BsFillCartCheckFill,
+    FaRegHeart,
 }
 
 export default icons

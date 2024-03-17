@@ -96,7 +96,7 @@ const getCurrent = asyncHandler(async (req, res) => {
             path: 'product',
             select: 'title thumb price color category'
         }
-    });
+    }).populate('wishList', 'title thumb price color');
     return res.status(200).json({
         success: true,
         data: user ? user : 'User not found'
@@ -362,6 +362,38 @@ const removeProductFromCart = asyncHandler(async (req, res) => {
     }
 })
 
+const updateWishList = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    const { pid } = req.params;
+    const user = await User.findById(_id);
+    const alReadyWishList = user.wishList.find(item => item.toString() === pid);
+    if (alReadyWishList) {
+        const response = await User.findByIdAndUpdate(_id,
+            {
+                $pull: {
+                    wishList: pid,
+                }
+            },
+            { new: true });
+        return res.json({
+            success: response ? true : false,
+            message: response ? 'Remove from wishlist' : 'Something went wrong'
+        })
+    } else {
+        const response = await User.findByIdAndUpdate(_id,
+            {
+                $push: {
+                    wishList: pid,
+                }
+            },
+            { new: true });
+        return res.json({
+            success: response ? true : false,
+            message: response ? 'Add into wishlist' : 'Something went wrong'
+        })
+    }
+})
+
 module.exports = {
     register,
     login,
@@ -378,4 +410,5 @@ module.exports = {
     addIntoCart,
     removeProductFromCart,
     finalRegister,
+    updateWishList,
 }

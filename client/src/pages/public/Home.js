@@ -1,8 +1,10 @@
 import { useSelector } from 'react-redux';
 import icons from 'ultils/icon';
 import { Sidebar, Baner, BestSeller, DealDaily, FeartureProduct, CustomSlider } from 'components';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 
 const Home = () => {
+    const navigate = useNavigate();
     const { MdOutlineKeyboardArrowRight } = icons;
     const { newProducts } = useSelector(state => state.product)
     const { categories } = useSelector(state => state.app)
@@ -41,13 +43,19 @@ const Home = () => {
                             <div className='flex flex-col flex-1 gap-[2px]'>
                                 <span className='uppercase font-semibold'>{category.title}</span>
                                 {category.brand?.map((item, index) => (
-                                    <a
+                                    <span
                                         key={index}
-                                        href='/'
-                                        className='flex gap-2 items-center text-gray-400 hover:text-hover text-sm'>
+                                        onClick={() => navigate({
+                                            pathname: `/${category.title.toLowerCase()}`,
+                                            search: createSearchParams({
+                                                brand: item
+                                            }).toString()
+                                        })}
+                                        className='flex gap-2 items-center text-gray-400 hover:text-hover text-sm cursor-pointer hover:underline'
+                                    >
                                         <span><MdOutlineKeyboardArrowRight /></span>
                                         <span>{item}</span>
-                                    </a>
+                                    </span>
                                 ))}
                             </div>
                         </div>

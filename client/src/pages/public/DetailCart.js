@@ -12,7 +12,6 @@ const DetailCart = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { currentCart, isSuccess, current } = useSelector(state => state.user);
-    console.log(isSuccess);
     useEffect(() => {
         if (isSuccess) {
             dispatch(getCurrent());
